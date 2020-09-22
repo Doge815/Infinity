@@ -31,16 +31,22 @@ namespace Assets
                     {
                         Block block = Map[x, y, z];
                         if (block.ID == 0) continue;
-                        DrawBlock((x, y,z));
+                        DrawBlock(new Vector3(x, y, z), block);
                     }
                 }
             }
 
         }
 
-        void DrawBlock((int x, int y, int z) Position)
+        void DrawBlock(Vector3 start, Block block)
         {
+            Vector3 offset1, offset2;
+        }
 
+        bool NeedDraw(Vector3 pos)
+        {
+            if (pos[0] < 0 || pos[1] < 0 || pos[2] < 0) return false;
+            return true;
         }
 
 
