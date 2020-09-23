@@ -53,13 +53,6 @@ namespace Assets
             RegenerateMesh();
         }
 
-        public void Update()
-        {
-            WorldPosition = new Vector3Int((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
-            ChunkGenerator.Populate(this);
-            RegenerateMesh();
-        }
-
         public void RegenerateMesh()
         {
             verts.Clear();
