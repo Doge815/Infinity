@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets
 {
-    public struct Block
+    public struct BlockInfo
     {
         public int ID;
     }

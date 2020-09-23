@@ -9,7 +9,7 @@ namespace Assets
     {
         public static int Size = 16;
 
-        public Block[,,] Map;
+        public int[,,] Map;
 
         public Mesh mesh;
         public List<Vector3> verts = new List<Vector3>();
@@ -29,7 +29,7 @@ namespace Assets
                 {
                     for (int z = 0; z < Size; z++)
                     {
-                        Block block = Map[x, y, z];
+                        BlockInfo block = Map[x, y, z];
                         if (block.ID == 0) continue;
                         DrawBlock((x, y,z));
                     }
