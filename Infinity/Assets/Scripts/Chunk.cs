@@ -81,14 +81,14 @@ namespace Assets
             RegenerateMesh();
         }
 
-        private void RegenerateMesh()
+        public void RegenerateMesh()
         {
             verts.Clear();
             tris.Clear();
             uv.Clear();
             mesh.triangles = tris.ToArray();
 
-            for(int x = 0; x < Size; x++)
+            for (int x = 0; x < Size; x++)
             {
                 for (int y = 0; y < Size; y++)
                 {
@@ -96,7 +96,7 @@ namespace Assets
                     {
                         int block = Map[x, y, z];
                         if (block == 0) continue;
-                        DrawBlock(x, y, z, block);
+                        DrawBlock(x, y, z);
                     }
                 }
             }
@@ -110,7 +110,7 @@ namespace Assets
 
         }
 
-        void DrawBlock(int x, int y, int z, int block)
+        private void DrawBlock(int x, int y, int z)
         {
             Vector3 pos = new Vector3(x, y, z);
             Vector3 offset1, offset2;
@@ -125,7 +125,7 @@ namespace Assets
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.back;
-                DrawIt(pos, offset1, offset2, block);
+                DrawTriangle(pos, offset1, offset2);
             }
             if (IsInvisible(x - 1, y, z))
             {
@@ -153,12 +153,12 @@ namespace Assets
             }
         }
 
-        void DrawIt(Vector3 pos, Vector3 o1, Vector3 o2, int block)
+        private void DrawTriangle(Vector3 origin, Vector3 offset1, Vector3 offset2)
         {
-            verts.Add(pos);
-            verts.Add(pos + o1);
-            verts.Add(pos + o2);
-            verts.Add(pos + o1 + o2);
+            verts.Add(origin);
+            verts.Add(origin + offset1);
+            verts.Add(origin + offset2);
+            verts.Add(origin + offset1 + offset2);
 
             int index = verts.Count;
             tris.Add(index + 0);
@@ -169,10 +169,9 @@ namespace Assets
             tris.Add(index + 1);
         }
 
-        bool IsInvisible(int x, int y, int z)
-        {
-            if (x < 0 || y < 0 || z < 0 || x >= Size || y >= Size || z >= Size) return true;
-            return Map[x,y,z] == 0;
-        }
+        private bool IsInvisible(int x, int y, int z) =>
+            x < 0 || y < 0 || z < 0
+            || x >= Size || y >= Size || z >= Size
+            || Map[x, y, z] == 0;
     }
 }
