@@ -97,7 +97,7 @@ namespace Assets
             var pos = new Vector3(x, y, z) + (Vector3.forward / 2) + (Vector3.up / 2) + (Vector3.right / 2);
             Vector3 offset1, offset2;
 
-            if(IsInvisible(x, y-1, z))
+            if (IsInvisible(x, y - 1, z))
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.back;
@@ -121,13 +121,13 @@ namespace Assets
                 offset2 = Vector3.back;
                 DrawTriangle(pos + (Vector3.right / 2), offset1, offset2);
             }
-            if (IsInvisible(x, y, z-1))
+            if (IsInvisible(x, y, z - 1))
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.up;
                 DrawTriangle(pos + (Vector3.back / 2), offset1, offset2);
             }
-            if (IsInvisible(x, y, z+1))
+            if (IsInvisible(x, y, z + 1))
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.up;
@@ -154,9 +154,82 @@ namespace Assets
             tris.Add(index + 1);
         }
 
-        private bool IsInvisible(int x, int y, int z) =>
-            x < 0 || y < 0 || z < 0
-            || x >= Size.x || y >= Size.y || z >= Size.z
-            || Map[x, y, z] == null;
+        private bool IsInvisible(int x, int y, int z)
+        {
+            if (x < 0)
+            {
+                try
+                {
+                    Chunk NextChunk = World.ActiveWorld.Chunks[new Vector3Int(WorldPosition[0] - 1, WorldPosition[1], WorldPosition[2])];
+                    return NextChunk.IsInvisible(Size[0] - 1, y, z);
+                }
+                catch
+                {
+                    return true;
+                }
+            }
+            else if (x >= Size[0])
+            {
+                try
+                {
+                    Chunk NextChunk = World.ActiveWorld.Chunks[new Vector3Int(WorldPosition[0] + 1, WorldPosition[1], WorldPosition[2])];
+                    return NextChunk.IsInvisible(0, y, z);
+                }
+                catch
+                {
+                    return true;
+                }
+            }
+            else if (y < 0)
+            {
+                try
+                {
+                    Chunk NextChunk = World.ActiveWorld.Chunks[new Vector3Int(WorldPosition[0], WorldPosition[1] - 1, WorldPosition[2])];
+                    return NextChunk.IsInvisible(x, Size[1] - 1, z);
+                }
+                catch
+                {
+                    return true;
+                }
+            }
+            else if (y >= Size[1])
+            {
+                try
+                {
+                    Chunk NextChunk = World.ActiveWorld.Chunks[new Vector3Int(WorldPosition[0], WorldPosition[1] + 1, WorldPosition[2])];
+                    return NextChunk.IsInvisible(x, 0, z);
+                }
+                catch
+                {
+                    return true;
+                }
+            }
+            else if (z < 0)
+            {
+                try
+                {
+                    Chunk NextChunk = World.ActiveWorld.Chunks[new Vector3Int(WorldPosition[0], WorldPosition[1], WorldPosition[2] - 1)];
+                    return NextChunk.IsInvisible(x, y, Size[2] - 1);
+                }
+                catch
+                {
+                    return true;
+                }
+            }
+            else if (z >= Size[2])
+            {
+                try
+                {
+                    Chunk NextChunk = World.ActiveWorld.Chunks[new Vector3Int(WorldPosition[0], WorldPosition[1], WorldPosition[2] + 1)];
+                    return NextChunk.IsInvisible(x, y, 0);
+                }
+                catch
+                {
+                    return true;
+                }
+            }
+            else return Map[x, y, z] == null;
+        }
+
     }
 }

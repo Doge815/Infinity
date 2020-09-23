@@ -5,6 +5,8 @@ namespace Assets
 {
     public class World
     {
+        public static World ActiveWorld;
+
         private Dictionary<Vector3Int, Chunk> _chunks;
 
         public BlockType this[Vector3Int pos]
@@ -28,6 +30,8 @@ namespace Assets
         {
             _chunks = new Dictionary<Vector3Int, Chunk>();
             Chunks = new ChunkIndexer(this);
+
+            ActiveWorld = this;
         }
 
         public struct ChunkIndexer
