@@ -22,11 +22,11 @@ namespace Assets.Players
         [Tooltip("How much faster going forwards is than backwards or sideways")]
         public float ForwardBoost = 1.2f;
 
-        public float SprintSpeed = 2f;
+        public float SprintSpeed = 4f;
 
         public float SneakSlow = 5f;
 
-        public float JumpPower = 2f;
+        public float JumpPower = 0.25f;
 
         public float GravityFactor = 0.25f;
 
