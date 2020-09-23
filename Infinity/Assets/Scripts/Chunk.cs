@@ -9,7 +9,28 @@ namespace Assets
     {
         public static int Size = 16;
 
-        public int[,,] Map;
+        private readonly int[,,] Map;
+        private readonly Dictionary<int, BlockType> BlockPalette;
+
+        public BlockType this[int x, int y, int z]
+        {
+            get
+            {
+                var id = Map[x, y, z];
+                return BlockPalette[id];
+            }
+            set
+            {
+                foreach (var pair in BlockPalette)
+                {
+                    if (pair.Value == value)
+                    {
+                        Map[x, y, z] = pair.Key;
+                        return;
+                    }
+                }
+            }
+        }
 
         public Mesh mesh;
         public List<Vector3> verts = new List<Vector3>();
@@ -29,7 +50,7 @@ namespace Assets
                 {
                     for (int z = 0; z < Size; z++)
                     {
-                        BlockInfo block = Map[x, y, z];
+                        BlockType block = Map[x, y, z];
                         if (block.ID == 0) continue;
                         DrawBlock(new Vector3(x, y, z), block);
                     }
