@@ -1,4 +1,4 @@
-﻿namespace Assets
+﻿namespace Assets.Scripts
 {
     public static class BlockTypes
     {

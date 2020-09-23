@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TreeEditor;
 using UnityEngine;
 
-namespace Assets
+namespace Assets.Scripts
 {
     public static class PerlinExtensions
     {

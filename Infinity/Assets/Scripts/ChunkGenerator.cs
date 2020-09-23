@@ -2,7 +2,7 @@
 using TreeEditor;
 using UnityEngine;
 
-namespace Assets
+namespace Assets.Scripts
 {
     [CreateAssetMenu(menuName = "Chunk Generator")]
     public class ChunkGenerator : ScriptableObject
@@ -35,7 +35,7 @@ namespace Assets
                     var worldPosition = chunk.WorldPosition;
 
                     var height =
-                        (Amplitude * Perlin.NoiseWithOctaves(Octaves, OctaveAmplitude, OctaveScale, (x + worldPosition.x) * Scale, (z + worldPosition.z) * Scale))
+                        Amplitude * Perlin.NoiseWithOctaves(Octaves, OctaveAmplitude, OctaveScale, (x + worldPosition.x) * Scale, (z + worldPosition.z) * Scale)
                         + GroundHeight - worldPosition.y;
 
                     for (int y = 0; y < Chunk.Size.y; y++)

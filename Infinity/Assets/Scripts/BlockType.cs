@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Assets
+namespace Assets.Scripts
 {
     public class BlockType : IEquatable<BlockType>
     {

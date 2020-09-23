@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets
+namespace Assets.Scripts
 {
     public class World
     {
@@ -42,7 +42,7 @@ namespace Assets
         public Vector3Int GetChunkIndex(int x, int y, int z) =>
             new Vector3Int(FlooredIntDivision(x, Chunk.Size.x), FlooredIntDivision(y, Chunk.Size.y), FlooredIntDivision(z, Chunk.Size.z));
 
-        private int FlooredIntDivision(int a, int b) => (a / b) - Convert.ToInt32(((a < 0) ^ (b < 0)) && (a % b != 0));
+        private int FlooredIntDivision(int a, int b) => a / b - Convert.ToInt32(a < 0 ^ b < 0 && a % b != 0);
 
         public World()
         {
