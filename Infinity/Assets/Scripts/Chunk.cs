@@ -6,6 +6,7 @@ using UnityEngine;
 namespace Assets
 {
     [RequireComponent(typeof(MeshFilter))]
+    [RequireComponent(typeof(MeshCollider))]
     public class Chunk : MonoBehaviour
     {
         public static Vector3Int Size = new Vector3Int(16, 16, 16);
@@ -54,6 +55,10 @@ namespace Assets
             mesh.vertices = verts.ToArray();
             mesh.triangles = tris.ToArray();
             mesh.RecalculateNormals();
+
+            meshCollider.sharedMesh = null;
+            meshCollider.sharedMesh = mesh;
+
         }
 
         private void DrawBlock(int x, int y, int z)
@@ -61,10 +66,40 @@ namespace Assets
             Vector3 pos = new Vector3(x, y, z);
             Vector3 offset1, offset2;
 
-            if (IsInvisible(x, y - 1, z))
+            if(IsInvisible(x, y-1, z))
+            {
+                offset1 = Vector3.left;
+                offset2 = Vector3.back;
+                DrawTriangle(pos, offset1, offset2);
+            }
+            if (IsInvisible(x, y + 1, z))
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.back;
+                DrawTriangle(pos, offset1, offset2);
+            }
+            if (IsInvisible(x - 1, y, z))
+            {
+                offset1 = Vector3.up;
+                offset2 = Vector3.back;
+                DrawTriangle(pos, offset1, offset2);
+            }
+            if (IsInvisible(x + 1, y, z))
+            {
+                offset1 = Vector3.down;
+                offset2 = Vector3.back;
+                DrawTriangle(pos, offset1, offset2);
+            }
+            if (IsInvisible(x, y, z-1))
+            {
+                offset1 = Vector3.left;
+                offset2 = Vector3.up;
+                DrawTriangle(pos, offset1, offset2);
+            }
+            if (IsInvisible(x, y, z+1))
+            {
+                offset1 = Vector3.right;
+                offset2 = Vector3.up;
                 DrawTriangle(pos, offset1, offset2);
             }
         }
