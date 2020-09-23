@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Assets
 {
-    [Serializable]
-    public class ChunkGenerator
+    [CreateAssetMenu(menuName = "Chunk Generator")]
+    public class ChunkGenerator : ScriptableObject
     {
         [HideInInspector]
         public Perlin Perlin;
