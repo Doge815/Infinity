@@ -62,7 +62,6 @@ namespace Assets
             verts.Clear();
             tris.Clear();
             uv.Clear();
-            mesh.triangles = tris.ToArray();
 
             for (int x = 0; x < Size.x; x++)
             {
@@ -77,6 +76,7 @@ namespace Assets
                 }
             }
 
+            mesh.Clear();
             mesh.vertices = verts.ToArray();
             mesh.triangles = tris.ToArray();
             mesh.RecalculateNormals();
@@ -130,12 +130,13 @@ namespace Assets
 
         private void DrawTriangle(Vector3 origin, Vector3 offset1, Vector3 offset2)
         {
+            var index = verts.Count;
+
             verts.Add(origin);
             verts.Add(origin + offset1);
             verts.Add(origin + offset2);
             verts.Add(origin + offset1 + offset2);
 
-            int index = verts.Count;
             tris.Add(index + 0);
             tris.Add(index + 1);
             tris.Add(index + 2);
