@@ -20,7 +20,7 @@ namespace Assets
 
         public override string ToString() => Id;
 
-        public static bool operator ==(BlockType lhs, BlockType rhs) => lhs?.Equals(rhs) ?? rhs == null;
+        public static bool operator ==(BlockType lhs, BlockType rhs) => lhs?.Equals(rhs) ?? rhs is null;
 
         public static bool operator !=(BlockType lhs, BlockType rhs) => !(lhs == rhs);
     }
