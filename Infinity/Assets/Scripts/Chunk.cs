@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using TreeEditor;
 using UnityEngine;
 
 namespace Assets
@@ -18,7 +20,7 @@ namespace Assets
         /// <summary>
         /// The block types of all blocks in the chunk.
         /// </summary>
-        private BlockType[,,] Map = new BlockType[Size.x, Size.y, Size.z];
+        private BlockType[,,] Map;
 
         public ChunkGenerator ChunkGenerator;
 
@@ -43,13 +45,16 @@ namespace Assets
 
         public void Start()
         {
+            Map = new BlockType[Size.x, Size.y, Size.z];
+
+            ChunkGenerator.Populate(this);
+
             mesh = new Mesh();
 
             meshFilter = GetComponent<MeshFilter>();
+            meshFilter.sharedMesh = mesh;
             meshCollider = GetComponent<MeshCollider>();
 
-            WorldPosition = new Vector3Int((int)transform.position.x, (int)transform.position.y, (int)transform.position.z);
-            ChunkGenerator.Populate(this);
             RegenerateMesh();
         }
 
@@ -77,17 +82,16 @@ namespace Assets
             mesh.triangles = tris.ToArray();
             mesh.RecalculateNormals();
 
-            meshFilter.sharedMesh = mesh;
             meshCollider.sharedMesh = null;
             meshCollider.sharedMesh = mesh;
         }
 
         private void DrawBlock(int x, int y, int z)
         {
-            Vector3 pos = new Vector3(x, y, z);
+            Vector3 pos = new Vector3(x, y, z) + Vector3.forward / 2 + Vector3.up / 2 + Vector3.right / 2;
             Vector3 offset1, offset2;
 
-            if (IsInvisible(x, y - 1, z))
+            if(IsInvisible(x, y-1, z))
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.back;
@@ -111,13 +115,13 @@ namespace Assets
                 offset2 = Vector3.back;
                 DrawTriangle(pos + (Vector3.right / 2), offset1, offset2);
             }
-            if (IsInvisible(x, y, z - 1))
+            if (IsInvisible(x, y, z-1))
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.up;
                 DrawTriangle(pos + (Vector3.back / 2), offset1, offset2);
             }
-            if (IsInvisible(x, y, z + 1))
+            if (IsInvisible(x, y, z+1))
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.up;
