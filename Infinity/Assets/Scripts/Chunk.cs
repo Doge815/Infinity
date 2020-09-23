@@ -4,11 +4,12 @@ using UnityEngine;
 namespace Assets
 {
     [RequireComponent(typeof(MeshFilter))]
+    [RequireComponent(typeof(MeshCollider))]
     public class Chunk : MonoBehaviour
     {
         public static int Size = 16;
 
-        private readonly int[,,] Map;
+        private int[,,] Map;
         private Dictionary<int, BlockType> BlockPalette = new Dictionary<int, BlockType> { [0] = BlockTypes.Air };
 
         public BlockType this[int x, int y, int z]
@@ -69,6 +70,16 @@ namespace Assets
         public List<Vector3> verts = new List<Vector3>();
         public List<int> tris = new List<int>();
         public List<Vector2> uv = new List<Vector2>();
+        public MeshCollider meshCollider;
+
+        public void Start()
+        {
+            Map = new int[Size, Size, Size];
+            mesh = new Mesh();
+            GetComponent<MeshFilter>().mesh = mesh;
+            meshCollider = GetComponent<MeshCollider>();
+            RegenerateMesh();
+        }
 
         private void RegenerateMesh()
         {
@@ -94,16 +105,50 @@ namespace Assets
             mesh.triangles = tris.ToArray();
             mesh.RecalculateNormals();
 
+            meshCollider.sharedMesh = null;
+            meshCollider.sharedMesh = mesh;
+
         }
 
         void DrawBlock(int x, int y, int z, int block)
         {
             Vector3 pos = new Vector3(x, y, z);
             Vector3 offset1, offset2;
+
             if(IsInvisible(x, y-1, z))
+            {
+                offset1 = Vector3.left;
+                offset2 = Vector3.back;
+                DrawIt(pos, offset1, offset2, block);
+            }
+            if (IsInvisible(x, y + 1, z))
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.back;
+                DrawIt(pos, offset1, offset2, block);
+            }
+            if (IsInvisible(x - 1, y, z))
+            {
+                offset1 = Vector3.up;
+                offset2 = Vector3.back;
+                DrawIt(pos, offset1, offset2, block);
+            }
+            if (IsInvisible(x + 1, y, z))
+            {
+                offset1 = Vector3.down;
+                offset2 = Vector3.back;
+                DrawIt(pos, offset1, offset2, block);
+            }
+            if (IsInvisible(x, y, z-1))
+            {
+                offset1 = Vector3.left;
+                offset2 = Vector3.up;
+                DrawIt(pos, offset1, offset2, block);
+            }
+            if (IsInvisible(x, y, z+1))
+            {
+                offset1 = Vector3.right;
+                offset2 = Vector3.up;
                 DrawIt(pos, offset1, offset2, block);
             }
         }
