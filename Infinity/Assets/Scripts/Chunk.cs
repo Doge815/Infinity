@@ -36,6 +36,34 @@ namespace Assets
             }
         }
 
+        public void OptimizeBlockPalette()
+        {
+            var newPalette = new Dictionary<int, BlockType>();
+            var idReassignments = new Dictionary<int, int>();
+
+            for (int x = 0; x < Map.Length; x++)
+            {
+                for (int y = 0; y < Map.Length; y++)
+                {
+                    for (int z = 0; z < Map.Length; z++)
+                    {
+                        var id = Map[x, y, z];
+
+                        if (newPalette.ContainsKey(id))
+                        {
+                            if (idReassignments.TryGetValue(id, out var newId)) Map[x, y, z] = newId;
+                        }
+                        else
+                        {
+                            var newId = newPalette.Count;
+                            newPalette[newId] = BlockPalette[id];
+                            if (newId != id) idReassignments[id] = newId;
+                        }
+                    }
+                }
+            }
+        }
+
         public Mesh mesh;
         public List<Vector3> verts = new List<Vector3>();
         public List<int> tris = new List<int>();
