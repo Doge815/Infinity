@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using TreeEditor;
 using UnityEngine;
 
 namespace Assets
@@ -6,69 +8,28 @@ namespace Assets
     [RequireComponent(typeof(MeshFilter))]
     public class Chunk : MonoBehaviour
     {
-        public static int Size = 16;
+        public static Vector3Int Size = new Vector3Int(16, 16, 16);
 
-        private readonly int[,,] Map;
-        private Dictionary<int, BlockType> BlockPalette = new Dictionary<int, BlockType> { [0] = BlockTypes.Air };
+        /// <summary>
+        /// The position of the chunk in the world, measured from the local block at (0, 0, 0).
+        /// </summary>
+        public Vector3Int WorldPosition;
+
+        /// <summary>
+        /// The block types of all blocks in the chunk.
+        /// </summary>
+        private readonly BlockType[,,] Map;
 
         public BlockType this[int x, int y, int z]
         {
-            get
-            {
-                var id = Map[x, y, z];
-                return BlockPalette[id];
-            }
-            set
-            {
-                foreach (var pair in BlockPalette)
-                {
-                    if (pair.Value == value)
-                    {
-                        Map[x, y, z] = pair.Key;
-                        return;
-                    }
-                }
-
-                var newId = BlockPalette.Count;
-                BlockPalette[newId] = value;
-                Map[x, y, z] = newId;
-            }
+            get => Map[x, y, z];
+            set => Map[x, y, z] = value;
         }
 
-        public void OptimizeBlockPalette()
-        {
-            var newPalette = new Dictionary<int, BlockType>();
-            var idReassignments = new Dictionary<int, int>();
-
-            for (int x = 0; x < Map.Length; x++)
-            {
-                for (int y = 0; y < Map.Length; y++)
-                {
-                    for (int z = 0; z < Map.Length; z++)
-                    {
-                        var id = Map[x, y, z];
-
-                        if (newPalette.ContainsKey(id))
-                        {
-                            if (idReassignments.TryGetValue(id, out var newId)) Map[x, y, z] = newId;
-                        }
-                        else
-                        {
-                            var newId = newPalette.Count;
-                            newPalette[newId] = BlockPalette[id];
-                            if (newId != id) idReassignments[id] = newId;
-                        }
-                    }
-                }
-            }
-
-            BlockPalette = newPalette;
-        }
-
-        public Mesh mesh;
-        public List<Vector3> verts = new List<Vector3>();
-        public List<int> tris = new List<int>();
-        public List<Vector2> uv = new List<Vector2>();
+        private readonly Mesh mesh = new Mesh();
+        private readonly List<Vector3> verts = new List<Vector3>();
+        private readonly List<int> tris = new List<int>();
+        private readonly List<Vector2> uv = new List<Vector2>();
 
         public void RegenerateMesh()
         {
@@ -77,14 +38,14 @@ namespace Assets
             uv.Clear();
             mesh.triangles = tris.ToArray();
 
-            for (int x = 0; x < Size; x++)
+            for (int x = 0; x < Size.x; x++)
             {
-                for (int y = 0; y < Size; y++)
+                for (int y = 0; y < Size.y; y++)
                 {
-                    for (int z = 0; z < Size; z++)
+                    for (int z = 0; z < Size.z; z++)
                     {
-                        int block = Map[x, y, z];
-                        if (block == 0) continue;
+                        var block = this[x, y, z];
+                        if (block == BlockTypes.Air) continue;
                         DrawBlock(x, y, z);
                     }
                 }
@@ -126,7 +87,7 @@ namespace Assets
 
         private bool IsInvisible(int x, int y, int z) =>
             x < 0 || y < 0 || z < 0
-            || x >= Size || y >= Size || z >= Size
-            || Map[x, y, z] == 0;
+            || x >= Size.x || y >= Size.y || z >= Size.z
+            || Map[x, y, z] == BlockTypes.Air;
     }
 }
