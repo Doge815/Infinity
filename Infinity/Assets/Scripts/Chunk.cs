@@ -10,7 +10,7 @@ namespace Assets
         public static int Size = 16;
 
         private readonly int[,,] Map;
-        private readonly Dictionary<int, BlockType> BlockPalette = new Dictionary<int, BlockType> { [0] = BlockType.Air };
+        private readonly Dictionary<int, BlockType> BlockPalette = new Dictionary<int, BlockType> { [0] = BlockTypes.Air };
 
         public BlockType this[int x, int y, int z]
         {
