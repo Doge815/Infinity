@@ -35,6 +35,7 @@ namespace Assets
                 {
                     var height =
                         (Amplitude * Perlin.NoiseWithOctaves(Octaves, OctaveAmplitude, OctaveScale, x * Scale, z * Scale))
+                        + GroundHeight
                         - chunk.WorldPosition.y;
 
                     var heightInChunk = Math.Min(Mathf.Floor(height), Chunk.Size.y);

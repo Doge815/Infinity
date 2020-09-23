@@ -70,7 +70,7 @@ namespace Assets
                     for (int z = 0; z < Size.z; z++)
                     {
                         var block = this[x, y, z];
-                        if (block == BlockTypes.Air) continue;
+                        if (block == null) continue;
                         DrawBlock(x, y, z);
                     }
                 }
@@ -148,6 +148,6 @@ namespace Assets
         private bool IsInvisible(int x, int y, int z) =>
             x < 0 || y < 0 || z < 0
             || x >= Size.x || y >= Size.y || z >= Size.z
-            || Map[x, y, z] == BlockTypes.Air;
+            || Map[x, y, z] == null;
     }
 }
