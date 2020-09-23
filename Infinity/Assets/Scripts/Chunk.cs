@@ -98,37 +98,37 @@ namespace Assets
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.back;
-                DrawTriangle(pos, offset1, offset2);
+                DrawTriangle(pos + Vector3.down / 2, offset1, offset2);
             }
             if (IsInvisible(x, y + 1, z))
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.back;
-                DrawTriangle(pos, offset1, offset2);
+                DrawTriangle(pos + Vector3.up / 2, offset1, offset2);
             }
             if (IsInvisible(x - 1, y, z))
             {
                 offset1 = Vector3.up;
                 offset2 = Vector3.back;
-                DrawTriangle(pos, offset1, offset2);
+                DrawTriangle(pos + Vector3.left / 2, offset1, offset2);
             }
             if (IsInvisible(x + 1, y, z))
             {
                 offset1 = Vector3.down;
                 offset2 = Vector3.back;
-                DrawTriangle(pos, offset1, offset2);
+                DrawTriangle(pos + Vector3.right / 2, offset1, offset2);
             }
             if (IsInvisible(x, y, z - 1))
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.up;
-                DrawTriangle(pos, offset1, offset2);
+                DrawTriangle(pos + Vector3.back / 2, offset1, offset2);
             }
             if (IsInvisible(x, y, z + 1))
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.up;
-                DrawTriangle(pos, offset1, offset2);
+                DrawTriangle(pos + Vector3.forward/2, offset1, offset2);
             }
         }
 
@@ -136,10 +136,10 @@ namespace Assets
         {
             var index = verts.Count;
 
-            verts.Add(origin);
-            verts.Add(origin + offset1);
-            verts.Add(origin + offset2);
-            verts.Add(origin + offset1 + offset2);
+            verts.Add(origin - offset1/2 - offset2/2);
+            verts.Add(origin + offset1/2 - offset2/2);
+            verts.Add(origin + offset2/2 - offset1/2);
+            verts.Add(origin + offset1/2 + offset2/2);
 
             tris.Add(index + 0);
             tris.Add(index + 1);
