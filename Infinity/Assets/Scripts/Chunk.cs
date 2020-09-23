@@ -88,7 +88,7 @@ namespace Assets
 
         private void DrawBlock(int x, int y, int z)
         {
-            Vector3 pos = new Vector3(x, y, z) + Vector3.forward / 2 + Vector3.up / 2 + Vector3.right / 2;
+            var pos = new Vector3(x, y, z) + (Vector3.forward / 2) + (Vector3.up / 2) + (Vector3.right / 2);
             Vector3 offset1, offset2;
 
             if (IsInvisible(x, y - 1, z))
