@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets
@@ -71,7 +70,7 @@ namespace Assets
         public List<int> tris = new List<int>();
         public List<Vector2> uv = new List<Vector2>();
 
-        void RegenerateMesh()
+        private void RegenerateMesh()
         {
             verts.Clear();
             tris.Clear();
@@ -90,20 +89,16 @@ namespace Assets
                     }
                 }
             }
-
         }
 
-        void DrawBlock(Vector3 start, BlockType block)
+        private void DrawBlock(Vector3 start, BlockType block)
         {
             Vector3 offset1, offset2;
         }
 
-        bool NeedDraw(Vector3 pos)
+        private bool NeedDraw(Vector3 pos)
         {
-            if (pos[0] < 0 || pos[1] < 0 || pos[2] < 0) return false;
-            return true;
+            return pos[0] >= 0 && pos[1] >= 0 && pos[2] >= 0;
         }
-
-
     }
 }
