@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Assets.Scripts
+namespace Assets.Players
 {
     [DefaultExecutionOrder(-90)]
     public class Player : MonoBehaviour
