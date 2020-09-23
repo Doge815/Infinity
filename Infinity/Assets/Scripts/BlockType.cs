@@ -1,16 +1,20 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Assets
 {
-    public struct BlockType : System.IEquatable<BlockType>
+    public class BlockType : IEquatable<BlockType>
     {
-        public string Id;
+        public string Id { get; }
 
-        public bool Equals(BlockType other) => string.Equals(Id, other.Id, System.StringComparison.CurrentCulture);
+        public BlockType(string id)
+        {
+            Id = id;
+        }
 
-        public override bool Equals(object obj) => obj is BlockType other ? Equals(other);
+        public bool Equals(BlockType other) => string.Equals(Id, other.Id, StringComparison.OrdinalIgnoreCase);
+
+        public override bool Equals(object obj) => obj is BlockType other && Equals(other);
 
         public override int GetHashCode() => 2108858624 + EqualityComparer<string>.Default.GetHashCode(Id);
 

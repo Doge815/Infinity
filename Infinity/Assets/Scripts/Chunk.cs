@@ -10,7 +10,7 @@ namespace Assets
         public static int Size = 16;
 
         private readonly int[,,] Map;
-        private readonly Dictionary<int, BlockType> BlockPalette;
+        private readonly Dictionary<int, BlockType> BlockPalette = new Dictionary<int, BlockType> { [0] = BlockType.Air };
 
         public BlockType this[int x, int y, int z]
         {
@@ -29,6 +29,10 @@ namespace Assets
                         return;
                     }
                 }
+
+                var newId = BlockPalette.Count;
+                BlockPalette[newId] = value;
+                Map[x, y, z] = newId;
             }
         }
 
@@ -50,8 +54,8 @@ namespace Assets
                 {
                     for (int z = 0; z < Size; z++)
                     {
-                        BlockType block = Map[x, y, z];
-                        if (block.ID == 0) continue;
+                        BlockType block = this[x, y, z];
+                        if (block.Id == 0) continue;
                         DrawBlock(new Vector3(x, y, z), block);
                     }
                 }
@@ -59,7 +63,7 @@ namespace Assets
 
         }
 
-        void DrawBlock(Vector3 start, Block block)
+        void DrawBlock(Vector3 start, BlockType block)
         {
             Vector3 offset1, offset2;
         }
