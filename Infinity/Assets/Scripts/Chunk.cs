@@ -62,8 +62,6 @@ namespace Assets
             meshFilter = GetComponent<MeshFilter>();
             meshFilter.sharedMesh = mesh;
             meshCollider = GetComponent<MeshCollider>();
-
-            RegenerateMesh();
         }
 
         public void RegenerateMesh()

@@ -73,5 +73,16 @@ namespace Assets
                 set => World._chunks[pos] = value;
             }
         }
+
+        public Chunk SpwanChunk(Vector3Int ChunkPos, bool draw = false)
+        {
+            GameObject chunkObject = ChunkDaemon.SpawnChunk(ChunkPos);
+            Chunk chunk = chunkObject.GetComponent<Chunk>();
+            _chunks.Add(ChunkPos, chunk);
+            ///
+            ///insert stored data into chunk here
+            ///
+            return chunk;
+        }
     }
 }
