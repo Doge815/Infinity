@@ -15,7 +15,7 @@ namespace Assets
 
         [Space]
         public float Amplitude = 4f;
-        public float Scale = 10f;
+        public float Scale = 0.1f;
 
         [Space]
         public int Octaves = 4;
