@@ -28,6 +28,8 @@ namespace Assets.Players
 
         public float JumpPower = 2f;
 
+        public float GravityFactor = 0.25f;
+
         [Space]
         [Header("Look Settings")]
         public float MouseSensitivity = 10f;
@@ -157,7 +159,7 @@ namespace Assets.Players
                 (sidewardSpeed * (yaw * Vector3.right))
                 + (forwardSpeed * (yaw * Vector3.forward))
                 + jump
-                + (Time.deltaTime * Physics.gravity));
+                + (Time.deltaTime * Physics.gravity * GravityFactor));
 
             CharacterController.transform.rotation = yaw;
 
