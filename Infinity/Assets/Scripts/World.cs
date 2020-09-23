@@ -20,14 +20,14 @@ namespace Assets
         {
             get
             {
-                var chunkPosition = GetChunkPosition(x, y, z);
+                var chunkPosition = GetChunkIndex(x, y, z);
                 var chunk = Chunks[chunkPosition];
                 if (chunk == null) return null;
                 return chunk[x - chunk.WorldPosition.x, y - chunk.WorldPosition.y, z - chunk.WorldPosition.z];
             }
             set
             {
-                var chunkPosition = GetChunkPosition(x, y, z);
+                var chunkPosition = GetChunkIndex(x, y, z);
                 var chunk = Chunks[chunkPosition];
                 if (chunk == null)
                 {
@@ -38,8 +38,8 @@ namespace Assets
             }
         }
 
-        public Vector3Int GetChunkPosition(Vector3Int pos) => GetChunkPosition(pos.x, pos.y, pos.z);
-        public Vector3Int GetChunkPosition(int x, int y, int z) =>
+        public Vector3Int GetChunkIndex(Vector3Int pos) => GetChunkIndex(pos.x, pos.y, pos.z);
+        public Vector3Int GetChunkIndex(int x, int y, int z) =>
             new Vector3Int(FlooredIntDivision(x, Chunk.Size.x), FlooredIntDivision(y, Chunk.Size.y), FlooredIntDivision(z, Chunk.Size.z));
 
         private int FlooredIntDivision(int a, int b) => (a / b) - Convert.ToInt32(((a < 0) ^ (b < 0)) && (a % b != 0));

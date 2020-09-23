@@ -55,7 +55,7 @@ namespace Assets
 
             ChunkGenerator.Populate(this);
 
-            World.ActiveWorld.Chunks[World.ActiveWorld.GetChunkPosition(WorldPosition)] = this;
+            World.ActiveWorld.Chunks[World.ActiveWorld.GetChunkIndex(WorldPosition)] = this;
 
             mesh = new Mesh();
 
