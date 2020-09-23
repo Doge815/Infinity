@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Assets.Players
 {
-    [DefaultExecutionOrder(-90)]
+    //[DefaultExecutionOrder(-90)]
     public class Player : MonoBehaviour
     {
         public static Player ActivePlayer { get; protected set; }
@@ -92,6 +92,7 @@ namespace Assets.Players
             if (Orientation.y > 180) Orientation.y -= 360;
 
             StartCoroutine(nameof(SpeedMeasuring));
+            World.ActiveWorld.SpwanChunk(new Vector3Int(0, 0, 0));
         }
 
         private IEnumerator SpeedMeasuring()
