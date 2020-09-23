@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets
@@ -17,12 +18,24 @@ namespace Assets
 
         public BlockType this[int x, int y, int z]
         {
-            get => Chunks[GetChunkPosition(x, y, z)][x, y, z];
-            set => Chunks[GetChunkPosition(x, y, z)][x, y, z] = value;
+            get
+            {
+                var chunkPosition = GetChunkPosition(x, y, z);
+                return Chunks[chunkPosition][x - chunkPosition.x, y - chunkPosition.y, z - chunkPosition.z];
+            }
+
+            set
+            {
+                var chunkPosition = GetChunkPosition(x, y, z);
+                Chunks[chunkPosition][x - chunkPosition.x, y - chunkPosition.y, z - chunkPosition.z] = value;
+            }
         }
 
         public Vector3Int GetChunkPosition(Vector3Int pos) => GetChunkPosition(pos.x, pos.y, pos.z);
-        public Vector3Int GetChunkPosition(int x, int y, int z) => new Vector3Int(x / Chunk.Size.x, y / Chunk.Size.y, z / Chunk.Size.z);
+        public Vector3Int GetChunkPosition(int x, int y, int z) =>
+            new Vector3Int(FlooredIntDivision(x, Chunk.Size.x), FlooredIntDivision(y, Chunk.Size.y), FlooredIntDivision(z, Chunk.Size.z));
+
+        private int FlooredIntDivision(int a, int b) => (a / b) - Convert.ToInt32(((a < 0) ^ (b < 0)) && (a % b != 0));
 
         public World()
         {

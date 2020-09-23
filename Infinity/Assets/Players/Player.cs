@@ -28,6 +28,8 @@ namespace Assets.Players
 
         public float JumpPower = 2f;
 
+        public float GravityFactor = 0.25f;
+
         [Space]
         [Header("Look Settings")]
         public float MouseSensitivity = 10f;

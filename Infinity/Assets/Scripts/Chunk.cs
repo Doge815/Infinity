@@ -97,37 +97,37 @@ namespace Assets
             var pos = new Vector3(x, y, z) + (Vector3.forward / 2) + (Vector3.up / 2) + (Vector3.right / 2);
             Vector3 offset1, offset2;
 
-            if (IsInvisible(x, y - 1, z))
+            if (!IsVisible(x, y - 1, z))
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.back;
                 DrawTriangle(pos + (Vector3.down / 2), offset1, offset2);
             }
-            if (IsInvisible(x, y + 1, z))
+            if (!IsVisible(x, y + 1, z))
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.back;
                 DrawTriangle(pos + (Vector3.up / 2), offset1, offset2);
             }
-            if (IsInvisible(x - 1, y, z))
+            if (!IsVisible(x - 1, y, z))
             {
                 offset1 = Vector3.up;
                 offset2 = Vector3.back;
                 DrawTriangle(pos + (Vector3.left / 2), offset1, offset2);
             }
-            if (IsInvisible(x + 1, y, z))
+            if (!IsVisible(x + 1, y, z))
             {
                 offset1 = Vector3.down;
                 offset2 = Vector3.back;
                 DrawTriangle(pos + (Vector3.right / 2), offset1, offset2);
             }
-            if (IsInvisible(x, y, z - 1))
+            if (!IsVisible(x, y, z - 1))
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.up;
                 DrawTriangle(pos + (Vector3.back / 2), offset1, offset2);
             }
-            if (IsInvisible(x, y, z + 1))
+            if (!IsVisible(x, y, z + 1))
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.up;
@@ -154,21 +154,13 @@ namespace Assets
             tris.Add(index + 1);
         }
 
-        private bool IsInvisible(int x, int y, int z)
+        private bool IsVisible(int x, int y, int z)
         {
-            if (x < 0
-                || x >= Size.x
-                || y < 0
-                || y >= Size.y
-                || z < 0
-                || z >= Size.z)
-            {
-                return World.ActiveWorld[x, y, z] == null;
-            }
-            else
-            {
-                return Map[x, y, z] == null;
-            }
+            return x >= 0 && x < Size.x
+                && y >= 0 && y < Size.y
+                && z >= 0 && z < Size.z
+                ? Map[x, y, z] != null
+                : World.ActiveWorld[x + WorldPosition.x, y + WorldPosition.y, z + WorldPosition.z] != null;
         }
     }
 }
