@@ -19,7 +19,9 @@ namespace Assets
         /// <summary>
         /// The block types of all blocks in the chunk.
         /// </summary>
-        private readonly BlockType[,,] Map;
+        private BlockType[,,] Map;
+
+        public ChunkGenerator ChunkGenerator;
 
         public BlockType this[int x, int y, int z]
         {
@@ -27,10 +29,33 @@ namespace Assets
             set => Map[x, y, z] = value;
         }
 
-        private readonly Mesh mesh = new Mesh();
-        private readonly List<Vector3> verts = new List<Vector3>();
-        private readonly List<int> tris = new List<int>();
-        private readonly List<Vector2> uv = new List<Vector2>();
+        [HideInInspector]
+        public Mesh mesh;
+        [HideInInspector]
+        public List<Vector3> verts = new List<Vector3>();
+        [HideInInspector]
+        public List<int> tris = new List<int>();
+        [HideInInspector]
+        public List<Vector2> uv = new List<Vector2>();
+        [HideInInspector]
+        public MeshFilter meshFilter;
+        [HideInInspector]
+        public MeshCollider meshCollider;
+
+        public void Start()
+        {
+            Map = new BlockType[Size.x, Size.y, Size.z];
+
+            ChunkGenerator.Populate(this);
+
+            mesh = new Mesh();
+
+            meshFilter = GetComponent<MeshFilter>();
+            meshFilter.sharedMesh = mesh;
+            meshCollider = GetComponent<MeshCollider>();
+
+            RegenerateMesh();
+        }
 
         public void RegenerateMesh()
         {

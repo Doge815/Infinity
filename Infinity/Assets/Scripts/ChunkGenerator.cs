@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace Assets
 {
-    public class ChunkGenerator : ScriptableObject
+    [Serializable]
+    public class ChunkGenerator
     {
         [HideInInspector]
         public Perlin Perlin;
