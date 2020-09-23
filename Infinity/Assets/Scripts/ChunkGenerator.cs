@@ -15,7 +15,7 @@ namespace Assets
 
         [Space]
         public float Amplitude = 4f;
-        public float Scale = 10f;
+        public float Scale = 0.1f;
 
         [Space]
         public int Octaves = 4;
@@ -33,10 +33,11 @@ namespace Assets
             {
                 for (int z = 0; z < Chunk.Size.z; z++)
                 {
+                    var worldPosition = chunk.WorldPosition;
+
                     var height =
-                        (Amplitude * Perlin.NoiseWithOctaves(Octaves, OctaveAmplitude, OctaveScale, x * Scale, z * Scale))
-                        + GroundHeight
-                        - chunk.WorldPosition.y;
+                        (Amplitude * Perlin.NoiseWithOctaves(Octaves, OctaveAmplitude, OctaveScale, (x - worldPosition.x) * Scale, (z - worldPosition.z) * Scale))
+                        + GroundHeight - worldPosition.y;
 
                     var heightInChunk = Math.Min(Mathf.Floor(height), Chunk.Size.y);
 

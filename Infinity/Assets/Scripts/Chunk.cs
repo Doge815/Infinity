@@ -7,6 +7,7 @@ namespace Assets
 {
     [RequireComponent(typeof(MeshFilter))]
     [RequireComponent(typeof(MeshCollider))]
+    [ExecuteInEditMode]
     public class Chunk : MonoBehaviour
     {
         public static Vector3Int Size = new Vector3Int(16, 16, 16);
