@@ -22,7 +22,7 @@ namespace Assets.Players
         [Tooltip("How much faster going forwards is than backwards or sideways")]
         public float ForwardBoost = 1.2f;
 
-        public float SprintSpeed = 2f;
+        public float SprintSpeed = 4f;
 
         public float SneakSlow = 5f;
 
@@ -156,7 +156,7 @@ namespace Assets.Players
             CharacterController.Move(
                 (sidewardSpeed * (yaw * Vector3.right))
                 + (forwardSpeed * (yaw * Vector3.forward))
-                + jump
+                + jump / 5
                 + (Time.deltaTime * Physics.gravity));
 
             CharacterController.transform.rotation = yaw;

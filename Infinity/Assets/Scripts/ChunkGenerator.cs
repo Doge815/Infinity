@@ -14,11 +14,11 @@ namespace Assets
 
         [Space]
         public float Amplitude = 4f;
-        public float Scale = 0.1f;
+        public float Scale = 0.01f;
 
         [Space]
-        public int Octaves = 4;
-        public float OctaveAmplitude = .5f;
+        public int Octaves = 6;
+        public float OctaveAmplitude = .2f;
         public float OctaveScale = .5f;
 
         public ChunkGenerator()
