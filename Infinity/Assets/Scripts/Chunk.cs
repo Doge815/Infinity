@@ -55,6 +55,8 @@ namespace Assets
 
             ChunkGenerator.Populate(this);
 
+            World.ActiveWorld.Chunks[World.ActiveWorld.GetChunkPosition(WorldPosition)] = this;
+
             mesh = new Mesh();
 
             meshFilter = GetComponent<MeshFilter>();
@@ -87,6 +89,10 @@ namespace Assets
             mesh.vertices = verts.ToArray();
             mesh.triangles = tris.ToArray();
             mesh.RecalculateNormals();
+
+            verts.Clear();
+            tris.Clear();
+            uv.Clear();
 
             meshCollider.sharedMesh = null;
             meshCollider.sharedMesh = mesh;

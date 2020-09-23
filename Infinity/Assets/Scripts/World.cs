@@ -6,7 +6,7 @@ namespace Assets
 {
     public class World
     {
-        public static World ActiveWorld;
+        public static World ActiveWorld = new World();
 
         private readonly Dictionary<Vector3Int, Chunk> _chunks;
 
@@ -21,13 +21,20 @@ namespace Assets
             get
             {
                 var chunkPosition = GetChunkPosition(x, y, z);
-                return Chunks[chunkPosition][x - chunkPosition.x, y - chunkPosition.y, z - chunkPosition.z];
+                var chunk = Chunks[chunkPosition];
+                if (chunk == null) return null;
+                return chunk[x - chunk.WorldPosition.x, y - chunk.WorldPosition.y, z - chunk.WorldPosition.z];
             }
-
             set
             {
                 var chunkPosition = GetChunkPosition(x, y, z);
-                Chunks[chunkPosition][x - chunkPosition.x, y - chunkPosition.y, z - chunkPosition.z] = value;
+                var chunk = Chunks[chunkPosition];
+                if (chunk == null)
+                {
+                    // TODO: Generate chunk
+                    return;
+                }
+                chunk[x - chunk.WorldPosition.x, y - chunk.WorldPosition.y, z - chunk.WorldPosition.z] = value;
             }
         }
 
@@ -41,11 +48,9 @@ namespace Assets
         {
             _chunks = new Dictionary<Vector3Int, Chunk>();
             Chunks = new ChunkIndexer(this);
-
-            ActiveWorld = this;
         }
 
-        public readonly ChunkIndexer Chunks;
+        public ChunkIndexer Chunks;
 
         public struct ChunkIndexer
         {
@@ -64,7 +69,7 @@ namespace Assets
 
             public Chunk this[Vector3Int pos]
             {
-                get => World._chunks[pos];
+                get => World._chunks.TryGetValue(pos, out var val) ? val : null;
                 set => World._chunks[pos] = value;
             }
         }
