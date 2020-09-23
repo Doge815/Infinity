@@ -119,7 +119,7 @@ namespace Assets
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.back;
-                DrawIt(pos, offset1, offset2, block);
+                DrawTriangle(pos, offset1, offset2);
             }
             if (IsInvisible(x, y + 1, z))
             {
@@ -131,25 +131,25 @@ namespace Assets
             {
                 offset1 = Vector3.up;
                 offset2 = Vector3.back;
-                DrawIt(pos, offset1, offset2, block);
+                DrawTriangle(pos, offset1, offset2);
             }
             if (IsInvisible(x + 1, y, z))
             {
                 offset1 = Vector3.down;
                 offset2 = Vector3.back;
-                DrawIt(pos, offset1, offset2, block);
+                DrawTriangle(pos, offset1, offset2);
             }
             if (IsInvisible(x, y, z-1))
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.up;
-                DrawIt(pos, offset1, offset2, block);
+                DrawTriangle(pos, offset1, offset2);
             }
             if (IsInvisible(x, y, z+1))
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.up;
-                DrawIt(pos, offset1, offset2, block);
+                DrawTriangle(pos, offset1, offset2);
             }
         }
 
