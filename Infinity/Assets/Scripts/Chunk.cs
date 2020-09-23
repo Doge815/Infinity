@@ -83,7 +83,6 @@ namespace Assets
 
             meshCollider.sharedMesh = null;
             meshCollider.sharedMesh = mesh;
-
         }
 
         private void DrawBlock(int x, int y, int z)
