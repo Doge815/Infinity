@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets
@@ -10,7 +9,7 @@ namespace Assets
         public static int Size = 16;
 
         private readonly int[,,] Map;
-        private readonly Dictionary<int, BlockType> BlockPalette;
+        private Dictionary<int, BlockType> BlockPalette = new Dictionary<int, BlockType> { [0] = BlockTypes.Air };
 
         public BlockType this[int x, int y, int z]
         {
@@ -29,7 +28,41 @@ namespace Assets
                         return;
                     }
                 }
+
+                var newId = BlockPalette.Count;
+                BlockPalette[newId] = value;
+                Map[x, y, z] = newId;
             }
+        }
+
+        public void OptimizeBlockPalette()
+        {
+            var newPalette = new Dictionary<int, BlockType>();
+            var idReassignments = new Dictionary<int, int>();
+
+            for (int x = 0; x < Map.Length; x++)
+            {
+                for (int y = 0; y < Map.Length; y++)
+                {
+                    for (int z = 0; z < Map.Length; z++)
+                    {
+                        var id = Map[x, y, z];
+
+                        if (newPalette.ContainsKey(id))
+                        {
+                            if (idReassignments.TryGetValue(id, out var newId)) Map[x, y, z] = newId;
+                        }
+                        else
+                        {
+                            var newId = newPalette.Count;
+                            newPalette[newId] = BlockPalette[id];
+                            if (newId != id) idReassignments[id] = newId;
+                        }
+                    }
+                }
+            }
+
+            BlockPalette = newPalette;
         }
 
         public Mesh mesh;
@@ -37,7 +70,7 @@ namespace Assets
         public List<int> tris = new List<int>();
         public List<Vector2> uv = new List<Vector2>();
 
-        void RegenerateMesh()
+        private void RegenerateMesh()
         {
             verts.Clear();
             tris.Clear();
@@ -96,7 +129,5 @@ namespace Assets
             if (x < 0 || y < 0 || z < 0 || x >= Size || y >= Size || z >= Size) return true;
             return Map[x,y,z] == 0;
         }
-
-
     }
 }
