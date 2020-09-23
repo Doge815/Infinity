@@ -7,7 +7,7 @@ namespace Assets
     {
         public static World ActiveWorld;
 
-        private Dictionary<Vector3Int, Chunk> _chunks;
+        private readonly Dictionary<Vector3Int, Chunk> _chunks;
 
         public BlockType this[Vector3Int pos]
         {
@@ -24,8 +24,6 @@ namespace Assets
         public Vector3Int GetChunkPosition(Vector3Int pos) => GetChunkPosition(pos.x, pos.y, pos.z);
         public Vector3Int GetChunkPosition(int x, int y, int z) => new Vector3Int(x / Chunk.Size.x, y / Chunk.Size.y, z / Chunk.Size.z);
 
-        public readonly ChunkIndexer Chunks;
-
         public World()
         {
             _chunks = new Dictionary<Vector3Int, Chunk>();
@@ -33,6 +31,8 @@ namespace Assets
 
             ActiveWorld = this;
         }
+
+        public readonly ChunkIndexer Chunks;
 
         public struct ChunkIndexer
         {

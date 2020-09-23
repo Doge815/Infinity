@@ -156,80 +156,19 @@ namespace Assets
 
         private bool IsInvisible(int x, int y, int z)
         {
-            if (x < 0)
+            if (x < 0
+                || x >= Size.x
+                || y < 0
+                || y >= Size.y
+                || z < 0
+                || z >= Size.z)
             {
-                try
-                {
-                    Chunk NextChunk = World.ActiveWorld.Chunks[new Vector3Int(WorldPosition[0] - 1, WorldPosition[1], WorldPosition[2])];
-                    return NextChunk.IsInvisible(Size[0] - 1, y, z);
-                }
-                catch
-                {
-                    return true;
-                }
+                return World.ActiveWorld[x, y, z] == null;
             }
-            else if (x >= Size[0])
+            else
             {
-                try
-                {
-                    Chunk NextChunk = World.ActiveWorld.Chunks[new Vector3Int(WorldPosition[0] + 1, WorldPosition[1], WorldPosition[2])];
-                    return NextChunk.IsInvisible(0, y, z);
-                }
-                catch
-                {
-                    return true;
-                }
+                return Map[x, y, z] == null;
             }
-            else if (y < 0)
-            {
-                try
-                {
-                    Chunk NextChunk = World.ActiveWorld.Chunks[new Vector3Int(WorldPosition[0], WorldPosition[1] - 1, WorldPosition[2])];
-                    return NextChunk.IsInvisible(x, Size[1] - 1, z);
-                }
-                catch
-                {
-                    return true;
-                }
-            }
-            else if (y >= Size[1])
-            {
-                try
-                {
-                    Chunk NextChunk = World.ActiveWorld.Chunks[new Vector3Int(WorldPosition[0], WorldPosition[1] + 1, WorldPosition[2])];
-                    return NextChunk.IsInvisible(x, 0, z);
-                }
-                catch
-                {
-                    return true;
-                }
-            }
-            else if (z < 0)
-            {
-                try
-                {
-                    Chunk NextChunk = World.ActiveWorld.Chunks[new Vector3Int(WorldPosition[0], WorldPosition[1], WorldPosition[2] - 1)];
-                    return NextChunk.IsInvisible(x, y, Size[2] - 1);
-                }
-                catch
-                {
-                    return true;
-                }
-            }
-            else if (z >= Size[2])
-            {
-                try
-                {
-                    Chunk NextChunk = World.ActiveWorld.Chunks[new Vector3Int(WorldPosition[0], WorldPosition[1], WorldPosition[2] + 1)];
-                    return NextChunk.IsInvisible(x, y, 0);
-                }
-                catch
-                {
-                    return true;
-                }
-            }
-            else return Map[x, y, z] == null;
         }
-
     }
 }
