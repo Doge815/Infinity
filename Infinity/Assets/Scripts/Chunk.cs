@@ -20,7 +20,7 @@ namespace Assets.Scripts
         /// </summary>
         private BlockType[,,] Map;
 
-        public ChunkGenerator ChunkGenerator;
+        public World World;
 
         public BlockType this[Vector3Int pos]
         {
@@ -54,9 +54,9 @@ namespace Assets.Scripts
 
             Map = new BlockType[Size.x, Size.y, Size.z];
 
-            ChunkGenerator.Populate(this);
+            World.ChunkGenerator.Populate(this);
 
-            World.ActiveWorld.Chunks[World.ActiveWorld.GetChunkIndex(WorldPosition)] = this;
+            World.Chunks[World.GetChunkIndex(WorldPosition)] = this;
 
             mesh = new Mesh();
 
@@ -165,7 +165,7 @@ namespace Assets.Scripts
                 && y >= 0 && y < Size.y
                 && z >= 0 && z < Size.z
                 ? Map[x, y, z] != null
-                : World.ActiveWorld[x + WorldPosition.x, y + WorldPosition.y, z + WorldPosition.z] != null;
+                : World[x + WorldPosition.x, y + WorldPosition.y, z + WorldPosition.z] != null;
         }
     }
 }

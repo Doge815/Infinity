@@ -4,11 +4,12 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class World
+    public class World : MonoBehaviour
     {
-        public static World ActiveWorld = new World();
+        public Chunk ChunkPrefab;
+        public ChunkGenerator ChunkGenerator;
 
-        private readonly Dictionary<Vector3Int, Chunk> _chunks;
+        private readonly Dictionary<Vector3Int, Chunk> _loadedChunks;
 
         public BlockType this[Vector3Int pos]
         {
@@ -46,7 +47,7 @@ namespace Assets.Scripts
 
         public World()
         {
-            _chunks = new Dictionary<Vector3Int, Chunk>();
+            _loadedChunks = new Dictionary<Vector3Int, Chunk>();
             Chunks = new ChunkIndexer(this);
         }
 
@@ -67,21 +68,19 @@ namespace Assets.Scripts
                 set => this[new Vector3Int(x, y, z)] = value;
             }
 
-            public Chunk this[Vector3Int pos]
+            public Chunk this[Vector3Int chunkIndex]
             {
-                get => World._chunks.TryGetValue(pos, out var val) ? val : null;
-                set => World._chunks[pos] = value;
+                get => World._loadedChunks.TryGetValue(chunkIndex, out var val) ? val : World.SpawnChunk(chunkIndex);
+                set => World._loadedChunks[chunkIndex] = value;
             }
         }
 
-        public Chunk SpwanChunk(Vector3Int ChunkPos, bool draw = false)
+        public Chunk SpawnChunk(Vector3Int chunkIndex, bool draw = false)
         {
-            GameObject chunkObject = ChunkDaemon.SpawnChunk(ChunkPos);
-            Chunk chunk = chunkObject.GetComponent<Chunk>();
-            ///
-            ///insert stored data into chunk here
-            ///
-            if (draw) chunk.RegenerateMesh();
+            var chunk = Instantiate(ChunkPrefab, chunkIndex * Chunk.Size, Quaternion.identity);
+
+            _loadedChunks[chunkIndex] = chunk;
+
             return chunk;
         }
     }
