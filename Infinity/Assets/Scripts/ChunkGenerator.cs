@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using TreeEditor;
 using UnityEngine;
 
@@ -36,14 +35,12 @@ namespace Assets
                     var worldPosition = chunk.WorldPosition;
 
                     var height =
-                        (Amplitude * Perlin.NoiseWithOctaves(Octaves, OctaveAmplitude, OctaveScale, (x - worldPosition.x) * Scale, (z - worldPosition.z) * Scale))
+                        (Amplitude * Perlin.NoiseWithOctaves(Octaves, OctaveAmplitude, OctaveScale, (x + worldPosition.x) * Scale, (z + worldPosition.z) * Scale))
                         + GroundHeight - worldPosition.y;
 
-                    var heightInChunk = Math.Min(Mathf.Floor(height), Chunk.Size.y);
-
-                    for (int y = 0; y < heightInChunk; y++)
+                    for (int y = 0; y < Chunk.Size.y; y++)
                     {
-                        chunk[x, y, z] = BlockTypes.Dirt;
+                        chunk[x, y, z] = y < height ? BlockTypes.Dirt : null;
                     }
                 }
             }
