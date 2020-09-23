@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using TreeEditor;
-using UnityEngine;
 
 namespace Assets.Scripts
 {

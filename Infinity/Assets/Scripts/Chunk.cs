@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using TreeEditor;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -101,44 +99,44 @@ namespace Assets.Scripts
 
         private void DrawBlock(int x, int y, int z)
         {
-            var pos = new Vector3(x, y, z) + Vector3.forward / 2 + Vector3.up / 2 + Vector3.right / 2;
+            var pos = new Vector3(x, y, z) + (Vector3.forward / 2) + (Vector3.up / 2) + (Vector3.right / 2);
             Vector3 offset1, offset2;
 
             if (!IsVisible(x, y - 1, z))
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.back;
-                DrawTriangle(pos + Vector3.down / 2, offset1, offset2);
+                DrawTriangle(pos + (Vector3.down / 2), offset1, offset2);
             }
             if (!IsVisible(x, y + 1, z))
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.back;
-                DrawTriangle(pos + Vector3.up / 2, offset1, offset2);
+                DrawTriangle(pos + (Vector3.up / 2), offset1, offset2);
             }
             if (!IsVisible(x - 1, y, z))
             {
                 offset1 = Vector3.up;
                 offset2 = Vector3.back;
-                DrawTriangle(pos + Vector3.left / 2, offset1, offset2);
+                DrawTriangle(pos + (Vector3.left / 2), offset1, offset2);
             }
             if (!IsVisible(x + 1, y, z))
             {
                 offset1 = Vector3.down;
                 offset2 = Vector3.back;
-                DrawTriangle(pos + Vector3.right / 2, offset1, offset2);
+                DrawTriangle(pos + (Vector3.right / 2), offset1, offset2);
             }
             if (!IsVisible(x, y, z - 1))
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.up;
-                DrawTriangle(pos + Vector3.back / 2, offset1, offset2);
+                DrawTriangle(pos + (Vector3.back / 2), offset1, offset2);
             }
             if (!IsVisible(x, y, z + 1))
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.up;
-                DrawTriangle(pos + Vector3.forward / 2, offset1, offset2);
+                DrawTriangle(pos + (Vector3.forward / 2), offset1, offset2);
             }
         }
 

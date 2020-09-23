@@ -1,5 +1,4 @@
-﻿using System;
-using TreeEditor;
+﻿using TreeEditor;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -35,7 +34,7 @@ namespace Assets.Scripts
                     var worldPosition = chunk.WorldPosition;
 
                     var height =
-                        Amplitude * Perlin.NoiseWithOctaves(Octaves, OctaveAmplitude, OctaveScale, (x + worldPosition.x) * Scale, (z + worldPosition.z) * Scale)
+                        (Amplitude * Perlin.NoiseWithOctaves(Octaves, OctaveAmplitude, OctaveScale, (x + worldPosition.x) * Scale, (z + worldPosition.z) * Scale))
                         + GroundHeight - worldPosition.y;
 
                     for (int y = 0; y < Chunk.Size.y; y++)
