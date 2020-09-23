@@ -12,7 +12,7 @@ namespace Assets
             Id = id;
         }
 
-        public bool Equals(BlockType other) => string.Equals(Id, other.Id, StringComparison.OrdinalIgnoreCase);
+        public bool Equals(BlockType other) => other != null && string.Equals(Id, other.Id, StringComparison.OrdinalIgnoreCase);
 
         public override bool Equals(object obj) => obj is BlockType other && Equals(other);
 
