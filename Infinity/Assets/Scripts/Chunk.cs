@@ -95,43 +95,45 @@ namespace Assets
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.back;
-                DrawTriangle(pos, offset1, offset2);
+                DrawTriangle(pos + (Vector3.down / 2), offset1, offset2);
             }
             if (IsInvisible(x, y + 1, z))
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.back;
-                DrawTriangle(pos, offset1, offset2);
+                DrawTriangle(pos + (Vector3.up / 2), offset1, offset2);
             }
             if (IsInvisible(x - 1, y, z))
             {
                 offset1 = Vector3.up;
                 offset2 = Vector3.back;
-                DrawTriangle(pos, offset1, offset2);
+                DrawTriangle(pos + (Vector3.left / 2), offset1, offset2);
             }
             if (IsInvisible(x + 1, y, z))
             {
                 offset1 = Vector3.down;
                 offset2 = Vector3.back;
-                DrawTriangle(pos, offset1, offset2);
+                DrawTriangle(pos + (Vector3.right / 2), offset1, offset2);
             }
             if (IsInvisible(x, y, z-1))
             {
                 offset1 = Vector3.left;
                 offset2 = Vector3.up;
-                DrawTriangle(pos, offset1, offset2);
+                DrawTriangle(pos + (Vector3.back / 2), offset1, offset2);
             }
             if (IsInvisible(x, y, z+1))
             {
                 offset1 = Vector3.right;
                 offset2 = Vector3.up;
-                DrawTriangle(pos, offset1, offset2);
+                DrawTriangle(pos + (Vector3.forward / 2), offset1, offset2);
             }
         }
 
         private void DrawTriangle(Vector3 origin, Vector3 offset1, Vector3 offset2)
         {
             var index = verts.Count;
+
+            origin -= (offset1 + offset2) / 2;
 
             verts.Add(origin);
             verts.Add(origin + offset1);
