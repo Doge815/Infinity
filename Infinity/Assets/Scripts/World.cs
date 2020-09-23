@@ -78,10 +78,10 @@ namespace Assets
         {
             GameObject chunkObject = ChunkDaemon.SpawnChunk(ChunkPos);
             Chunk chunk = chunkObject.GetComponent<Chunk>();
-            _chunks.Add(ChunkPos, chunk);
             ///
             ///insert stored data into chunk here
             ///
+            if (draw) chunk.RegenerateMesh();
             return chunk;
         }
     }

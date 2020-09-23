@@ -92,7 +92,8 @@ namespace Assets.Players
             if (Orientation.y > 180) Orientation.y -= 360;
 
             StartCoroutine(nameof(SpeedMeasuring));
-            World.ActiveWorld.SpwanChunk(new Vector3Int(0, 0, 0));
+            World.ActiveWorld.SpwanChunk(new Vector3Int(0, 0, 0), true);
+            World.ActiveWorld.SpwanChunk(new Vector3Int(1, 0, 0), true);
         }
 
         private IEnumerator SpeedMeasuring()

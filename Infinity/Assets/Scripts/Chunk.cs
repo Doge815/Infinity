@@ -49,8 +49,11 @@ namespace Assets
         [HideInInspector]
         public MeshCollider meshCollider;
 
-        public void Start()
+        public void Awake()
         {
+            Transform t = GetComponent<Transform>();
+            WorldPosition = new Vector3Int((int)t.position.x, (int)t.position.y, (int)t.position.z);
+
             Map = new BlockType[Size.x, Size.y, Size.z];
 
             ChunkGenerator.Populate(this);
