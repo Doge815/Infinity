@@ -124,10 +124,9 @@ namespace Assets
             tris.Add(index + 1);
         }
 
-        private bool IsInvisible(int x, int y, int z)
-        {
-            if (x < 0 || y < 0 || z < 0 || x >= Size || y >= Size || z >= Size) return true;
-            return Map[x, y, z] == 0;
-        }
+        private bool IsInvisible(int x, int y, int z) =>
+            x < 0 || y < 0 || z < 0
+            || x >= Size || y >= Size || z >= Size
+            || Map[x, y, z] == 0;
     }
 }
