@@ -24,6 +24,12 @@ namespace Assets
 
         public ChunkGenerator ChunkGenerator;
 
+        public BlockType this[Vector3Int pos]
+        {
+            get => this[pos.x, pos.y, pos.z];
+            set => this[pos.x, pos.y, pos.z] = value;
+        }
+
         public BlockType this[int x, int y, int z]
         {
             get => Map[x, y, z];
