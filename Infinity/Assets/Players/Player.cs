@@ -32,6 +32,13 @@ namespace Assets.Players
         public float GravityFactor = 0.25f;
 
         [Space]
+        [Header("Momentum")]
+        public float AirResistance = 0.99f;
+        public float Friction = 0.1f;
+
+        public Vector3 Momentum;
+
+        [Space]
         [Header("Look Settings")]
         public float MouseSensitivity = 10f;
 
@@ -142,16 +149,19 @@ namespace Assets.Players
 
         public void Update()
         {
-            var forwardMultiplier = _moveInput.y > 0 ? ForwardBoost * (1 + (_sprint * SprintSpeed)) : 1;
-            var sneakMultiplier = 1f / (1f + (_sneak * SneakSlow));
-            var forwardSpeed = _moveInput.y * forwardMultiplier * sneakMultiplier * Time.deltaTime;
-            var sidewardSpeed = _moveInput.x * sneakMultiplier * Time.deltaTime;
-
             if ((CursorLock || _pressing) && !LookLocked)
             {
                 Orientation += _lookInput * Time.deltaTime;
                 Orientation.y = Mathf.Clamp(Orientation.y, MinPitch, MaxPitch);
             }
+        }
+
+        public void FixedUpdate()
+        {
+            var forwardMultiplier = _moveInput.y > 0 ? ForwardBoost * (1 + (_sprint * SprintSpeed)) : 1;
+            var sneakMultiplier = 1f / (1f + (_sneak * SneakSlow));
+            var forwardSpeed = _moveInput.y * forwardMultiplier * sneakMultiplier * Time.fixedDeltaTime;
+            var sidewardSpeed = _moveInput.x * sneakMultiplier * Time.fixedDeltaTime;
 
             var yaw = Quaternion.AngleAxis(Orientation.x, Vector3.up);
 
@@ -159,11 +169,20 @@ namespace Assets.Players
                 ? Vector3.up * JumpPower
                 : Vector3.zero;
 
-            CharacterController.Move(
+            Momentum *= AirResistance; // TODO: Account for different frame lengths
+            Momentum +=
                 (sidewardSpeed * (yaw * Vector3.right))
                 + (forwardSpeed * (yaw * Vector3.forward))
                 + jump
-                + (Time.deltaTime * Physics.gravity * GravityFactor));
+                + (Time.fixedDeltaTime * Physics.gravity * GravityFactor);
+
+#pragma warning disable RCS1130 // Bitwise operation on enum without Flags attribute.
+            if ((CharacterController.Move(Momentum) & CollisionFlags.CollidedBelow) != 0)
+#pragma warning restore RCS1130 // Bitwise operation on enum without Flags attribute.
+            {
+                Momentum.x *= Friction;
+                Momentum.z *= Friction;
+            }
 
             CharacterController.transform.rotation = yaw;
 
@@ -171,7 +190,7 @@ namespace Assets.Players
 
             var currentChunkIndex = World.GetChunkIndex(CharacterController.transform.position.ToVector3Int());
 
-            World.GetOrSpawnChunks(currentChunkIndex, RenderDistance, draw: true);
+            foreach (var chunk in World.Chunks.GetOrSpawnArea(currentChunkIndex, RenderDistance)) _ = chunk;
         }
 
         public void OnGUI()

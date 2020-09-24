@@ -51,7 +51,11 @@ MonoBehaviour:
   ForwardBoost: 1.2
   SprintSpeed: 2
   SneakSlow: 5
-  JumpPower: 2
+  JumpPower: 0.2
+  GravityFactor: 0.25
+  AirResistance: 0.99
+  Friction: 0.1
+  Momentum: {x: 0, y: 0, z: 0}
   MouseSensitivity: 800
   LookLocked: 0
   CursorLock: 1
@@ -61,6 +65,8 @@ MonoBehaviour:
   TargetFramerate: 0
   ShowDebugStats: 0
   SpeedUpdateRate: 0
+  World: {fileID: 0}
+  RenderDistance: 2
 --- !u!143 &7087882455228609179
 CharacterController:
   m_ObjectHideFlags: 0

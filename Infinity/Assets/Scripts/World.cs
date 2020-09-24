@@ -75,52 +75,36 @@ namespace Assets.Scripts
                 set => World._loadedChunks[chunkIndex] = value;
             }
 
-            public Chunk GetOrSpawn(Vector3Int chunkIndex, bool draw = false)
+            public Chunk GetOrSpawn(Vector3Int chunkIndex)
             {
                 var chunk = this[chunkIndex];
 
-                return chunk != null ? chunk : World.SpawnChunk(chunkIndex, draw);
+                return chunk != null ? chunk : World.SpawnChunk(chunkIndex);
             }
-        }
 
-        public Chunk SpawnChunk(Vector3Int chunkIndex, bool draw = false)
-        {
-            var chunk = Instantiate(ChunkPrefab, chunkIndex * Chunk.Size, Quaternion.identity);
-
-            chunk.World = this;
-            _loadedChunks[chunkIndex] = chunk;
-            chunk.RegenerateMesh();
-
-            return chunk;
-        }
-
-        private IEnumerable<Chunk> GetOrSpawnChunksCore(Vector3Int chunkIndex, int chunkIndexDistance)
-        {
-            for (int x = -chunkIndexDistance; x <= chunkIndexDistance; x++)
+            public IEnumerable<Chunk> GetOrSpawnArea(Vector3Int chunkIndex, int chunkIndexDistance)
             {
-                for (int y = -chunkIndexDistance; y <= chunkIndexDistance; y++)
+                for (int x = -chunkIndexDistance; x <= chunkIndexDistance; x++)
                 {
-                    for (int z = -chunkIndexDistance; z <= chunkIndexDistance; z++)
+                    for (int y = -chunkIndexDistance; y <= chunkIndexDistance; y++)
                     {
-                        yield return Chunks.GetOrSpawn(chunkIndex + new Vector3Int(x, y, z), draw: false);
+                        for (int z = -chunkIndexDistance; z <= chunkIndexDistance; z++)
+                        {
+                            yield return GetOrSpawn(chunkIndex + new Vector3Int(x, y, z));
+                        }
                     }
                 }
             }
         }
 
-        public IEnumerable<Chunk> GetOrSpawnChunks(Vector3Int chunkIndex, int chunkIndexDistance, bool draw = false)
+        private Chunk SpawnChunk(Vector3Int chunkIndex)
         {
-            var chunks = GetOrSpawnChunksCore(chunkIndex, chunkIndexDistance).ToList();
+            var chunk = Instantiate(ChunkPrefab, chunkIndex * Chunk.Size, Quaternion.identity, transform);
 
-            if (draw)
-            {
-                foreach (var elem in chunks)
-                {
-                    elem.RegenerateMesh();
-                }
-            }
+            chunk.World = this;
+            _loadedChunks[chunkIndex] = chunk;
 
-            return chunks;
+            return chunk;
         }
 
         public override string ToString() => $"World {{ {_loadedChunks.Count} Loaded Chunks, ChunkPrefab = {ChunkPrefab}, ChunkGenerator = {ChunkGenerator} }}";

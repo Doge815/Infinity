@@ -30,9 +30,17 @@ namespace Assets.Scripts
 
         public BlockType this[int x, int y, int z]
         {
-            get => Map[x, y, z];
-            set => Map[x, y, z] = value;
+            get => Map?[x, y, z];
+            set
+            {
+                if (Map[x, y, z] == value) return;
+                RedrawRequired = true;
+                Map[x, y, z] = value;
+            }
         }
+
+        // TODO: Use events
+        public bool RedrawRequired = true;
 
         [HideInInspector]
         public Mesh mesh;
@@ -65,6 +73,15 @@ namespace Assets.Scripts
             meshFilter = GetComponent<MeshFilter>();
             meshFilter.sharedMesh = mesh;
             meshCollider = GetComponent<MeshCollider>();
+        }
+
+        public void Update()
+        {
+            if (RedrawRequired)
+            {
+                RegenerateMesh();
+                RedrawRequired = false;
+            }
         }
 
         public void RegenerateMesh()
