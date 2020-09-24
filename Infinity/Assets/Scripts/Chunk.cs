@@ -40,7 +40,7 @@ namespace Assets.Scripts
         }
 
         // TODO: Use events
-        public bool RedrawRequired = true;
+        public bool RedrawRequired = false;
 
         [HideInInspector]
         public Mesh mesh;
