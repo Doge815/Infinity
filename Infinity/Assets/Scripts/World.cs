@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -109,15 +110,17 @@ namespace Assets.Scripts
 
         public IEnumerable<Chunk> GetOrSpawnChunks(Vector3Int chunkIndex, int chunkIndexDistance, bool draw = false)
         {
-            foreach (var elem in GetOrSpawnChunksCore(chunkIndex, chunkIndexDistance))
+            var chunks = GetOrSpawnChunksCore(chunkIndex, chunkIndexDistance).ToList();
+
+            if (draw)
             {
-                if (draw)
+                foreach (var elem in chunks)
                 {
                     elem.RegenerateMesh();
                 }
-
-                yield return elem;
             }
+
+            return chunks;
         }
 
         public override string ToString() => $"World {{ {_loadedChunks.Count} Loaded Chunks, ChunkPrefab = {ChunkPrefab}, ChunkGenerator = {ChunkGenerator} }}";
