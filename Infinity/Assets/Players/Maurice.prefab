@@ -370,9 +370,9 @@ MonoBehaviour:
   SpeedUpdateRate: 0
   World: {fileID: 0}
   RenderDistance: 2
-  HighlightedBlock: {fileID: 0}
-  Alex: {fileID: 2182581623526155103, guid: 79bf2449ac7df454c911d7ecb6d72b8e, type: 3}
-  Justin: {fileID: 0}
+  HighlightedBlock: {fileID: 3683401830256300763}
+  Alex: {fileID: 3683401830336547048}
+  Justin: {fileID: 3683401828434614278}
 --- !u!143 &3683401829835941768
 CharacterController:
   m_ObjectHideFlags: 0
@@ -415,7 +415,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3683401830256300760}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 15.35, z: 6.02}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3683401830336547051}
