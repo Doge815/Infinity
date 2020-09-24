@@ -51,7 +51,7 @@ MonoBehaviour:
   ForwardBoost: 1.2
   SprintSpeed: 2
   SneakSlow: 5
-  JumpPower: 0.2
+  JumpPower: 1
   GravityFactor: 0.25
   AirResistance: 0.99
   Friction: 0.7
