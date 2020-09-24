@@ -174,7 +174,10 @@ namespace Assets.Players
 
                 HighlightedBlock.transform.position = pos;
 
-                World[pos] = place ? BlockTypes.Dirt : null;
+                if (_pressing)
+                {
+                    World[pos] = place ? BlockTypes.Dirt : null;
+                }
             }
             else
             {
