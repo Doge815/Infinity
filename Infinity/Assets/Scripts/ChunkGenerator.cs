@@ -1,4 +1,5 @@
-﻿using TreeEditor;
+﻿using System;
+using TreeEditor;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -37,9 +38,11 @@ namespace Assets.Scripts
                         (Amplitude * Perlin.NoiseWithOctaves(Octaves, OctaveAmplitude, OctaveScale, (x + worldPosition.x) * Scale, (z + worldPosition.z) * Scale))
                         + GroundHeight - worldPosition.y;
 
-                    for (int y = 0; y < Chunk.Size.y; y++)
+                    height = Math.Min(height, Chunk.Size.y);
+
+                    for (int y = 0; y < height; y++)
                     {
-                        chunk[x, y, z] = y < height ? BlockTypes.Dirt : null;
+                        chunk[x, y, z] = BlockTypes.Dirt;
                     }
                 }
             }
