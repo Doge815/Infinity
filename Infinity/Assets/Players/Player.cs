@@ -193,15 +193,26 @@ namespace Assets.Players
             var currentChunkIndex = World.GetChunkIndex(CharacterController.transform.position.ToVector3Int());
 
             foreach (var chunk in World.Chunks.GetOrSpawnArea(currentChunkIndex, RenderDistance, wake: true)) _ = chunk;
+
+            if (_pressing)
+            {
+                var ray = CursorLock ? new Ray(Camera.transform.position, Camera.transform.forward) : Camera.ScreenPointToRay(Input.mousePosition);
+
+                if (Physics.Raycast(ray, out var hit, 5f))
+                {
+                    var place = _sneak > 0.5f;
+                    var pos = (hit.point - (hit.normal / 2 * (place ? -1 : 1))).ToVector3Int();
+                    World[pos] = place ? BlockTypes.Dirt : null;
+                }
+            }
         }
 
         public void OnDrawGizmos()
         {
-            var ray = Camera.ScreenPointToRay(Input.mousePosition);
+            var ray = CursorLock ? new Ray(Camera.transform.position, Camera.transform.forward) : Camera.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out var hit, 5f))
             {
-                Gizmos.DrawLine(Camera.transform.position, hit.point);
                 Gizmos.DrawLine(hit.point, hit.point + hit.normal);
             }
         }

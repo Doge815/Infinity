@@ -497,6 +497,10 @@ PrefabInstance:
       propertyPath: World
       value: 
       objectReference: {fileID: 2132936872}
+    - target: {fileID: 7087882455228609176, guid: d9cfdd872bd0a4c49a9a57466c88df30, type: 3}
+      propertyPath: CursorLock
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7087882455228609177, guid: d9cfdd872bd0a4c49a9a57466c88df30, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
