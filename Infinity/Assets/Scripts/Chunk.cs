@@ -84,7 +84,7 @@ namespace Assets.Scripts
                 RedrawRequired = false;
             }
 
-            var cameraDistance = Camera.main.transform.position.ToVector3Int() - WorldPosition;
+            var cameraDistance = (Camera.main.transform.position.ToVector3Int() - WorldPosition).Absolute();
             var renderDistance = Player.Active.RenderDistance;
 
             if (cameraDistance.x - (Size.x/2) > renderDistance * Size.x
