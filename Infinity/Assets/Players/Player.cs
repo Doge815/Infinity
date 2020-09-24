@@ -195,6 +195,17 @@ namespace Assets.Players
             foreach (var chunk in World.Chunks.GetOrSpawnArea(currentChunkIndex, RenderDistance, wake: true)) _ = chunk;
         }
 
+        public void OnDrawGizmos()
+        {
+            var ray = Camera.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out var hit, 5f))
+            {
+                Gizmos.DrawLine(Camera.transform.position, hit.point);
+                Gizmos.DrawLine(hit.point, hit.point + hit.normal);
+            }
+        }
+
         public void OnGUI()
         {
             if (!ShowDebugStats) return;
