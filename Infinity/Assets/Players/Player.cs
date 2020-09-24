@@ -7,9 +7,12 @@ namespace Assets.Players
     [DefaultExecutionOrder(-90)]
     public class Player : MonoBehaviour
     {
+        #region move and other stuff
         public static Player ActivePlayer { get; protected set; }
 
         public PlayerInputActions _inputActions;
+
+        
 
         [Header("Components")]
         public Camera Camera;
@@ -71,10 +74,14 @@ namespace Assets.Players
 
         private Vector3 _lastPos;
         private float _dist;
+        #endregion
 
         [Space, Header("World")]
         public World World;
         public int RenderDistance;
+
+        private GameObject Alex;
+        private GameObject Justin;
 
         public void Awake()
         {
@@ -87,6 +94,8 @@ namespace Assets.Players
 
         public void Start()
         {
+            Alex = GameObject.Find("Alex");
+            Justin = GameObject.Find("Justin");
             if (Camera == null) Camera = GetComponentInChildren<Camera>();
             if (CharacterController == null) CharacterController = GetComponentInChildren<CharacterController>();
 
@@ -153,6 +162,38 @@ namespace Assets.Players
             {
                 Orientation += _lookInput * Time.deltaTime;
                 Orientation.y = Mathf.Clamp(Orientation.y, MinPitch, MaxPitch);
+            }
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if(Physics.Raycast(ray, out var hit, 5f))
+            {
+                Alex.SetActive(true);
+                Justin.SetActive(true);
+                var a = hit.point - hit.normal/2;
+                Alex.transform.position = new Vector3(Mathf.Floor(a.x), Mathf.Floor(a.y), Mathf.Floor(a.z));
+                a = hit.point + hit.normal / 2;
+                Justin.transform.position = new Vector3(Mathf.Floor(a.x), Mathf.Floor(a.y), Mathf.Floor(a.z));
+                if(Input.GetKeyDown(KeyCode.Mouse0)
+                {
+
+                }
+            }
+            else
+            {
+                Alex.SetActive(false);
+                Justin.SetActive(false);
+            }
+        }
+
+        public void OnDrawGizmos()
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out var hit, 5f))
+            {
+                Gizmos.DrawLine(Camera.main.transform.position, hit.point);
+                Gizmos.DrawLine(hit.point, hit.normal + hit.point);
             }
         }
 
