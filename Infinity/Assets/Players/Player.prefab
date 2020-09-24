@@ -47,18 +47,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Camera: {fileID: 7087882456321079645}
   CharacterController: {fileID: 7087882455228609179}
-  MoveSpeed: 2
+  MoveSpeed: 0.5
   ForwardBoost: 1.2
   SprintSpeed: 2
   SneakSlow: 5
   JumpPower: 0.2
   GravityFactor: 0.25
   AirResistance: 0.99
-  Friction: 0.1
+  Friction: 0.7
   Momentum: {x: 0, y: 0, z: 0}
   MouseSensitivity: 800
   LookLocked: 0
-  CursorLock: 1
+  CursorLock: 0
   Orientation: {x: 0, y: 0}
   MinPitch: -80
   MaxPitch: 80
