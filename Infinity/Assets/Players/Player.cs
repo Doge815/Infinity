@@ -7,12 +7,9 @@ namespace Assets.Players
     [DefaultExecutionOrder(-90)]
     public class Player : MonoBehaviour
     {
-        #region move and other stuff
-        public static Player ActivePlayer { get; protected set; }
+        public static Player Active { get; protected set; }
 
         public PlayerInputActions _inputActions;
-
-        
 
         [Header("Components")]
         public Camera Camera;
@@ -74,14 +71,14 @@ namespace Assets.Players
 
         private Vector3 _lastPos;
         private float _dist;
-        #endregion
 
         [Space, Header("World")]
         public World World;
         public int RenderDistance;
 
-        private GameObject Alex;
-        private GameObject Justin;
+        public Transform HighlightedBlock;
+        public GameObject Alex;
+        public GameObject Justin;
 
         public void Awake()
         {
@@ -96,8 +93,6 @@ namespace Assets.Players
 
         public void Start()
         {
-            Alex = GameObject.Find("Alex");
-            Justin = GameObject.Find("Justin");
             if (Camera == null) Camera = GetComponentInChildren<Camera>();
             if (CharacterController == null) CharacterController = GetComponentInChildren<CharacterController>();
 
@@ -166,36 +161,25 @@ namespace Assets.Players
                 Orientation.y = Mathf.Clamp(Orientation.y, MinPitch, MaxPitch);
             }
 
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            var ray = CursorLock ? new Ray(Camera.transform.position, Camera.transform.forward) : Camera.ScreenPointToRay(Input.mousePosition);
 
-            if(Physics.Raycast(ray, out var hit, 5f))
+            if (Physics.Raycast(ray, out var hit, 5f))
             {
-                Alex.SetActive(true);
-                Justin.SetActive(true);
-                var a = hit.point - hit.normal/2;
-                Alex.transform.position = new Vector3(Mathf.Floor(a.x), Mathf.Floor(a.y), Mathf.Floor(a.z));
-                a = hit.point + hit.normal / 2;
-                Justin.transform.position = new Vector3(Mathf.Floor(a.x), Mathf.Floor(a.y), Mathf.Floor(a.z));
-                if(Input.GetKeyDown(KeyCode.Mouse0))
-                {
-                    
-                }
+                var place = _sneak > 0.5f;
+
+                Alex.SetActive(!place);
+                Justin.SetActive(place);
+
+                var pos = (hit.point - (hit.normal / 2 * (place ? -1 : 1))).ToVector3Int();
+
+                HighlightedBlock.transform.position = pos;
+
+                World[pos] = place ? BlockTypes.Dirt : null;
             }
             else
             {
                 Alex.SetActive(false);
                 Justin.SetActive(false);
-            }
-        }
-
-        public void OnDrawGizmos()
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out var hit, 5f))
-            {
-                Gizmos.DrawLine(Camera.main.transform.position, hit.point);
-                Gizmos.DrawLine(hit.point, hit.normal + hit.point);
             }
         }
 
@@ -234,18 +218,6 @@ namespace Assets.Players
             var currentChunkIndex = World.GetChunkIndex(CharacterController.transform.position.ToVector3Int());
 
             foreach (var chunk in World.Chunks.GetOrSpawnArea(currentChunkIndex, RenderDistance, wake: true)) _ = chunk;
-
-            if (_pressing)
-            {
-                var ray = CursorLock ? new Ray(Camera.transform.position, Camera.transform.forward) : Camera.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(ray, out var hit, 5f))
-                {
-                    var place = _sneak > 0.5f;
-                    var pos = (hit.point - (hit.normal / 2 * (place ? -1 : 1))).ToVector3Int();
-                    World[pos] = place ? BlockTypes.Dirt : null;
-                }
-            }
         }
 
         public void OnDrawGizmos()
