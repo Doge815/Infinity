@@ -176,9 +176,9 @@ namespace Assets.Players
                 Alex.transform.position = new Vector3(Mathf.Floor(a.x), Mathf.Floor(a.y), Mathf.Floor(a.z));
                 a = hit.point + hit.normal / 2;
                 Justin.transform.position = new Vector3(Mathf.Floor(a.x), Mathf.Floor(a.y), Mathf.Floor(a.z));
-                if(Input.GetKeyDown(KeyCode.Mouse0)
+                if(Input.GetKeyDown(KeyCode.Mouse0))
                 {
-
+                    
                 }
             }
             else
