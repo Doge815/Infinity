@@ -386,7 +386,7 @@ GameObject:
   - component: {fileID: 2132936873}
   - component: {fileID: 2132936872}
   m_Layer: 0
-  m_Name: ChunkDaemon
+  m_Name: World
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -401,10 +401,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2132936871}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de8a76e00628c7a469d3b61dbb9c574b, type: 3}
+  m_Script: {fileID: 11500000, guid: d846b2ffc8336044aa39ab7f99920982, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _chunkPrefab: {fileID: 4442513343799341510, guid: 9f51fcf1e079a554aa7a86cf68ab88f4, type: 3}
+  ChunkPrefab: {fileID: 4442513343799341506, guid: 9f51fcf1e079a554aa7a86cf68ab88f4, type: 3}
+  ChunkGenerator: {fileID: 11400000, guid: 00ef1620fee772548bc71c7adfa694ce, type: 2}
 --- !u!4 &2132936873
 Transform:
   m_ObjectHideFlags: 0
@@ -413,7 +414,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2132936871}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -92.45506, y: -73.94748, z: 42.926918}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -426,6 +427,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7087882455228609176, guid: d9cfdd872bd0a4c49a9a57466c88df30, type: 3}
+      propertyPath: World
+      value: 
+      objectReference: {fileID: 2132936872}
+    - target: {fileID: 7087882455228609176, guid: d9cfdd872bd0a4c49a9a57466c88df30, type: 3}
+      propertyPath: RenderDistance
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7087882455228609177, guid: d9cfdd872bd0a4c49a9a57466c88df30, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

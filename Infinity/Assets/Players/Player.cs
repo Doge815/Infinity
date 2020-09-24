@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.Players
 {
-    //[DefaultExecutionOrder(-90)]
+    [DefaultExecutionOrder(-90)]
     public class Player : MonoBehaviour
     {
         public static Player ActivePlayer { get; protected set; }
@@ -54,8 +54,7 @@ namespace Assets.Players
         [Range(-90, 90)]
         public float MaxPitch = 80;
 
-        [Space]
-        [Tooltip("The target framerate. Set to 0 to disable.")]
+        [Space, Tooltip("The target framerate. Set to 0 to disable.")]
         public int TargetFramerate = 0;
 
         [Space, Header("Debug")]
@@ -65,6 +64,10 @@ namespace Assets.Players
 
         private Vector3 _lastPos;
         private float _dist;
+
+        [Space, Header("World")]
+        public World World;
+        public int RenderDistance;
 
         public void Awake()
         {
@@ -165,6 +168,10 @@ namespace Assets.Players
             CharacterController.transform.rotation = yaw;
 
             Camera.transform.localRotation = Quaternion.AngleAxis(Orientation.y, Vector3.left);
+
+            var currentChunkIndex = World.GetChunkIndex(CharacterController.transform.position.ToVector3Int());
+
+            World.GetOrSpawnChunks(currentChunkIndex, RenderDistance, draw: true);
         }
 
         public void OnGUI()

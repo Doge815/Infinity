@@ -18,7 +18,7 @@ namespace Assets.Scripts
         /// <summary>
         /// The block types of all blocks in the chunk.
         /// </summary>
-        private BlockType[,,] Map;
+        private readonly BlockType[,,] Map;
 
         public World World;
 
@@ -47,16 +47,18 @@ namespace Assets.Scripts
         [HideInInspector]
         public MeshCollider meshCollider;
 
-        public void Awake()
+        public Chunk()
         {
-            Transform t = GetComponent<Transform>();
-            WorldPosition = new Vector3Int((int)t.position.x, (int)t.position.y, (int)t.position.z);
-
             Map = new BlockType[Size.x, Size.y, Size.z];
+        }
 
-            World.ChunkGenerator.Populate(this);
+        public void Start()
+        {
+            WorldPosition = transform.position.ToVector3Int();
 
             World.Chunks[World.GetChunkIndex(WorldPosition)] = this;
+
+            World.ChunkGenerator.Populate(this);
 
             mesh = new Mesh();
 
@@ -93,6 +95,7 @@ namespace Assets.Scripts
             tris.Clear();
             uv.Clear();
 
+            meshFilter.sharedMesh = mesh;
             meshCollider.sharedMesh = null;
             meshCollider.sharedMesh = mesh;
         }
