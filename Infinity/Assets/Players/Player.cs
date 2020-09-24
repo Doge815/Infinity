@@ -90,6 +90,8 @@ namespace Assets.Players
                 QualitySettings.vSyncCount = 0;
             }
             Application.targetFrameRate = TargetFramerate;
+
+            Active = this;
         }
 
         public void Start()
@@ -148,7 +150,7 @@ namespace Assets.Players
 
             _inputActions.Player.Enable();
 
-            ActivePlayer = this;
+            Active = this;
         }
 
         public void OnDisable()
@@ -231,7 +233,18 @@ namespace Assets.Players
 
             var currentChunkIndex = World.GetChunkIndex(CharacterController.transform.position.ToVector3Int());
 
-            foreach (var chunk in World.Chunks.GetOrSpawnArea(currentChunkIndex, RenderDistance)) _ = chunk;
+            foreach (var chunk in World.Chunks.GetOrSpawnArea(currentChunkIndex, RenderDistance, wake: true)) _ = chunk;
+        }
+
+        public void OnDrawGizmos()
+        {
+            var ray = Camera.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out var hit, 5f))
+            {
+                Gizmos.DrawLine(Camera.transform.position, hit.point);
+                Gizmos.DrawLine(hit.point, hit.point + hit.normal);
+            }
         }
 
         public void OnGUI()
