@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Players;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -81,6 +82,16 @@ namespace Assets.Scripts
             {
                 RegenerateMesh();
                 RedrawRequired = false;
+            }
+
+            var cameraDistance = Camera.main.transform.position.ToVector3Int() - WorldPosition;
+            var renderDistance = Player.Active.RenderDistance;
+
+            if (cameraDistance.x - (Size.x/2) > renderDistance * Size.x
+                || cameraDistance.y - (Size.y / 2) > renderDistance * Size.y
+                || cameraDistance.z - (Size.z / 2) > renderDistance * Size.z)
+            {
+                gameObject.SetActive(false);
             }
         }
 

@@ -7,7 +7,7 @@ namespace Assets.Players
     [DefaultExecutionOrder(-90)]
     public class Player : MonoBehaviour
     {
-        public static Player ActivePlayer { get; protected set; }
+        public static Player Active { get; protected set; }
 
         public PlayerInputActions _inputActions;
 
@@ -83,6 +83,8 @@ namespace Assets.Players
                 QualitySettings.vSyncCount = 0;
             }
             Application.targetFrameRate = TargetFramerate;
+
+            Active = this;
         }
 
         public void Start()
@@ -139,7 +141,7 @@ namespace Assets.Players
 
             _inputActions.Player.Enable();
 
-            ActivePlayer = this;
+            Active = this;
         }
 
         public void OnDisable()
@@ -190,7 +192,7 @@ namespace Assets.Players
 
             var currentChunkIndex = World.GetChunkIndex(CharacterController.transform.position.ToVector3Int());
 
-            foreach (var chunk in World.Chunks.GetOrSpawnArea(currentChunkIndex, RenderDistance)) _ = chunk;
+            foreach (var chunk in World.Chunks.GetOrSpawnArea(currentChunkIndex, RenderDistance, wake: true)) _ = chunk;
         }
 
         public void OnGUI()

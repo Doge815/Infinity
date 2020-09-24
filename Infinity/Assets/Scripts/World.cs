@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -75,14 +74,18 @@ namespace Assets.Scripts
                 set => World._loadedChunks[chunkIndex] = value;
             }
 
-            public Chunk GetOrSpawn(Vector3Int chunkIndex)
+            public Chunk GetOrSpawn(Vector3Int chunkIndex, bool wake = false)
             {
                 var chunk = this[chunkIndex];
 
-                return chunk != null ? chunk : World.SpawnChunk(chunkIndex);
+                chunk = chunk != null ? chunk : World.SpawnChunk(chunkIndex);
+
+                if (wake) chunk.gameObject.SetActive(true);
+
+                return chunk;
             }
 
-            public IEnumerable<Chunk> GetOrSpawnArea(Vector3Int chunkIndex, int chunkIndexDistance)
+            public IEnumerable<Chunk> GetOrSpawnArea(Vector3Int chunkIndex, int chunkIndexDistance, bool wake = false)
             {
                 for (int x = -chunkIndexDistance; x <= chunkIndexDistance; x++)
                 {
@@ -90,7 +93,7 @@ namespace Assets.Scripts
                     {
                         for (int z = -chunkIndexDistance; z <= chunkIndexDistance; z++)
                         {
-                            yield return GetOrSpawn(chunkIndex + new Vector3Int(x, y, z));
+                            yield return GetOrSpawn(chunkIndex + new Vector3Int(x, y, z), wake);
                         }
                     }
                 }
