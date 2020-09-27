@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -87,14 +89,15 @@ namespace Assets.Scripts
 
             public IEnumerable<Chunk> GetOrSpawnArea(Vector3Int chunkIndex, int chunkIndexDistance, bool wake = false)
             {
+                var _this = this;
                 for (int x = -chunkIndexDistance; x <= chunkIndexDistance; x++)
                 {
                     for (int y = -chunkIndexDistance; y <= chunkIndexDistance; y++)
                     {
-                        for (int z = -chunkIndexDistance; z <= chunkIndexDistance; z++)
+                        Parallel.For(-chunkIndexDistance, chunkIndexDistance + 1, z =>
                         {
-                            yield return GetOrSpawn(chunkIndex + new Vector3Int(x, y, z), wake);
-                        }
+                            _this.GetOrSpawn(chunkIndex + new Vector3Int(x, y, z), wake);
+                        });
                     }
                 }
             }
