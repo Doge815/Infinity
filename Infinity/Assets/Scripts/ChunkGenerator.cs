@@ -32,43 +32,23 @@ namespace Assets.Scripts
             {
                 for (int z = 0; z < Chunk.Size.z; z++)
                 {
-                    var worldPosition = chunk.WorldPosition;
+                    var chunkWorldPosition = chunk.WorldPosition;
+                    var NoisePos = (new Vector3(x, 0, z)  + chunkWorldPosition)  * Scale;
 
                     var height =
-                        (Amplitude * Perlin.NoiseWithOctaves(Octaves, OctaveAmplitude, OctaveScale, (x + worldPosition.x) * Scale, (z + worldPosition.z) * Scale))
-                        + GroundHeight - worldPosition.y;
+                        (Amplitude * Perlin.NoiseWithOctaves(Octaves, OctaveAmplitude, OctaveScale, (x + chunkWorldPosition.x) * Scale, (z + chunkWorldPosition.z) * Scale))
+                        + GroundHeight - chunkWorldPosition.y;
 
                     height = Math.Min(height, Chunk.Size.y);
 
                     for (int y = 0; y < height; y++)
                     {
-                        chunk[x, y, z] = BallsItch(x, y, z) ? BlockTypes.Dirt : null;
+                        chunk[x, y, z] = (PerlinNoise3D(NoisePos.x, NoisePos.y  +  y  * Scale, NoisePos.z) > 0.2f) ? BlockTypes.Dirt : null;
                     }
                 }
             }
         }
 
-        public static  bool BallsItch(float x, float y,  float  z)
-        {
-            float noiseScale = 0.05f;
-            return PerlinNoise3D(x   *  noiseScale, y  *  noiseScale, z *  noiseScale) > 0.5;
-        }
-
-        public static float PerlinNoise3D(float x, float y, float z)
-        {
-            y += 1;
-            z += 2;
-            float xy = _perlin3DFixed(x, y);
-            float xz = _perlin3DFixed(x, z);
-            float yz = _perlin3DFixed(y, z);
-            float yx = _perlin3DFixed(y, x);
-            float zx = _perlin3DFixed(z, x);
-            float zy = _perlin3DFixed(z, y);
-            return xy * xz * yz * yx * zx * zy;
-        }
-        static float _perlin3DFixed(float a, float b)
-        {
-            return Mathf.Sin(Mathf.PI * Mathf.PerlinNoise(a, b));
-        }
+        public float PerlinNoise3D(float x, float y, float z) => Perlin.NoiseWithOctaves(3, 1, .5f, x, y, z);
     }
 }
