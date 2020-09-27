@@ -221,7 +221,7 @@ namespace Assets.Players
 
             var currentChunkIndex = World.GetChunkIndex(CharacterController.transform.position.ToVector3Int());
 
-            foreach (var chunk in World.Chunks.GetOrSpawnArea(currentChunkIndex, RenderDistance, wake: true)) _ = chunk;
+            World.Chunks.WakeOrSpawnArea(currentChunkIndex, RenderDistance, wake: true);
         }
 
         public void OnDrawGizmos()

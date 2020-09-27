@@ -87,7 +87,7 @@ namespace Assets.Scripts
                 return chunk;
             }
 
-            public IEnumerable<Chunk> GetOrSpawnArea(Vector3Int chunkIndex, int chunkIndexDistance, bool wake = false)
+            public void WakeOrSpawnArea(Vector3Int chunkIndex, int chunkIndexDistance, bool wake = false)
             {
                 var _this = this;
                 for (int x = -chunkIndexDistance; x <= chunkIndexDistance; x++)
