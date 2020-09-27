@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Assets.Players
@@ -170,11 +171,11 @@ namespace Assets.Players
                 Alex.SetActive(!place);
                 Justin.SetActive(place);
 
-                var pos = (hit.point - (hit.normal / 2 * (place ? -1 : 1))).ToVector3Int();
+                var pos = (hit.point - (hit.normal / 2 * (place ? -1 : 1))).Floor();
 
                 HighlightedBlock.transform.position = pos;
 
-                if (_pressing)
+                if (_pressing && hit.distance > 1 || _pressing &&  !place)
                 {
                     World[pos] = place ? BlockTypes.Dirt : null;
                 }
