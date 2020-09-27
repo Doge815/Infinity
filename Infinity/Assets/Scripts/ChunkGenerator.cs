@@ -42,10 +42,33 @@ namespace Assets.Scripts
 
                     for (int y = 0; y < height; y++)
                     {
-                        chunk[x, y, z] = BlockTypes.Dirt;
+                        chunk[x, y, z] = BallsItch(x, y, z) ? BlockTypes.Dirt : null;
                     }
                 }
             }
+        }
+
+        public static  bool BallsItch(float x, float y,  float  z)
+        {
+            float noiseScale = 0.05f;
+            return PerlinNoise3D(x   *  noiseScale, y  *  noiseScale, z *  noiseScale) > 0.5;
+        }
+
+        public static float PerlinNoise3D(float x, float y, float z)
+        {
+            y += 1;
+            z += 2;
+            float xy = _perlin3DFixed(x, y);
+            float xz = _perlin3DFixed(x, z);
+            float yz = _perlin3DFixed(y, z);
+            float yx = _perlin3DFixed(y, x);
+            float zx = _perlin3DFixed(z, x);
+            float zy = _perlin3DFixed(z, y);
+            return xy * xz * yz * yx * zx * zy;
+        }
+        static float _perlin3DFixed(float a, float b)
+        {
+            return Mathf.Sin(Mathf.PI * Mathf.PerlinNoise(a, b));
         }
     }
 }

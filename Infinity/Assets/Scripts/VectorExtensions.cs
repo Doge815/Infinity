@@ -13,5 +13,7 @@ namespace Assets.Scripts
         public static Vector3Int Divide(this Vector3Int lhs, int rhs) => new Vector3Int(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
 
         public static Vector3Int Absolute(this Vector3Int vec) => new Vector3Int(Math.Abs(vec.x), Math.Abs(vec.y), Math.Abs(vec.z));
+
+        public static Vector3Int Floor(this Vector3 vec) => new Vector3Int(Mathf.FloorToInt(vec.x), Mathf.FloorToInt(vec.y), Mathf.FloorToInt(vec.z));
     }
 }
