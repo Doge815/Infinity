@@ -1,4 +1,5 @@
 ﻿using Assets.Players;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,6 +40,13 @@ namespace Assets.Scripts
                 Map[x, y, z] = value;
             }
         }
+
+        public BlockType GetBlockTypeSafe(Vector3Int pos) => GetBlockTypeSafe(pos.x, pos.y, pos.z);
+
+        public BlockType GetBlockTypeSafe(int x, int y, int z) =>
+            x < 0 || y < 0 || z < 0 || x >= Size.x || y >= Size.y || z >= Size.z
+            ? null
+            : this[x, y, z];
 
         // TODO: Use events
         public bool RedrawRequired = false;
@@ -87,7 +95,7 @@ namespace Assets.Scripts
             var cameraDistance = (Camera.main.transform.position.ToVector3Int() - WorldPosition).Absolute();
             var renderDistance = Player.Active.RenderDistance;
 
-            if (cameraDistance.x - (Size.x/2) > renderDistance * Size.x
+            if (cameraDistance.x - (Size.x / 2) > renderDistance * Size.x
                 || cameraDistance.y - (Size.y / 2) > renderDistance * Size.y
                 || cameraDistance.z - (Size.z / 2) > renderDistance * Size.z)
             {
@@ -101,18 +109,7 @@ namespace Assets.Scripts
             tris.Clear();
             uv.Clear();
 
-            for (int x = 0; x < Size.x; x++)
-            {
-                for (int y = 0; y < Size.y; y++)
-                {
-                    for (int z = 0; z < Size.z; z++)
-                    {
-                        var block = this[x, y, z];
-                        if (block == null) continue;
-                        DrawBlock(x, y, z);
-                    }
-                }
-            }
+            for (int side = 0; side < 6; side++) DrawSide(side % 3, side >= 3);
 
             mesh.Clear();
             mesh.vertices = verts.ToArray();
@@ -123,42 +120,99 @@ namespace Assets.Scripts
             tris.Clear();
             uv.Clear();
 
-            meshFilter.sharedMesh = mesh;
-            meshCollider.sharedMesh = null;
-            meshCollider.sharedMesh = mesh;
+            this.ExecuteDelayed(() =>
+            {
+                meshFilter.sharedMesh = mesh;
+                meshCollider.sharedMesh = null;
+                meshCollider.sharedMesh = mesh;
+            }, 0f);
         }
 
-        private void DrawBlock(int x, int y, int z)
+        private void DrawSide(int side, bool isNegated)
         {
-            var pos = new Vector3(x, y, z) + (Vector3.one / 2);
+            var sideJ = (side + 1) % 3;
+            var sideK = (side + 2) % 3;
 
-            if (!IsVisible(x, y - 1, z))
+            Vector3Int GetIndex(int i, int j, int k)
             {
-                DrawTriangle(pos + (Vector3.down / 2), Vector3.left, Vector3.back);
+                switch (side)
+                {
+                    case 0: case 3: return new Vector3Int(i, j, k);
+                    case 1: case 4: return new Vector3Int(k, i, j);
+                    case 2: case 5: return new Vector3Int(j, k, i);
+                    default: throw new ArgumentException("Must be >= 0 and < 6", nameof(side));
+                }
             }
-            if (!IsVisible(x, y + 1, z))
+
+            for (int height = 0; height <= Size[side]; height++)
             {
-                DrawTriangle(pos + (Vector3.up / 2), Vector3.right, Vector3.back);
-            }
-            if (!IsVisible(x - 1, y, z))
-            {
-                DrawTriangle(pos + (Vector3.left / 2), Vector3.up, Vector3.back);
-            }
-            if (!IsVisible(x + 1, y, z))
-            {
-                DrawTriangle(pos + (Vector3.right / 2), Vector3.down, Vector3.back);
-            }
-            if (!IsVisible(x, y, z - 1))
-            {
-                DrawTriangle(pos + (Vector3.back / 2), Vector3.left, Vector3.up);
-            }
-            if (!IsVisible(x, y, z + 1))
-            {
-                DrawTriangle(pos + (Vector3.forward / 2), Vector3.right, Vector3.up);
+                var faces = new BlockType[Size[sideJ], Size[sideK]];
+
+                for (int j = 0; j < Size[sideJ]; j++)
+                {
+                    for (int k = 0; k < Size[sideK]; k++)
+                    {
+                        faces[j, k] = IsVisible(GetIndex(height + (isNegated ? -1 : 1), j, k)) ? null : GetBlockTypeSafe(GetIndex(height, j, k));
+                    }
+                }
+
+                while (true)
+                {
+                    int startJ, startK;
+
+                    for (int j = 0; j < Size[sideJ]; j++)
+                    {
+                        for (int k = 0; k < Size[sideK]; k++)
+                        {
+                            if (GetBlockTypeSafe(GetIndex(height, j, k)) != null)
+                            {
+                                startJ = j;
+                                startK = k;
+
+                                goto FindStartJKExit;
+                            }
+                        }
+                    }
+                    break;
+                FindStartJKExit:
+
+                    int endJ = Size[sideJ], endK = Size[sideK];
+
+                    for (int j = startJ; j < endJ; j++)
+                    {
+                        if (GetBlockTypeSafe(GetIndex(height, j, startK)) == null)
+                        {
+                            endJ = j;
+                            break;
+                        }
+                    }
+
+                    for (int k = startK+1; k < endK; k++)
+                    {
+                        for (int j = startJ; j < endJ; j++)
+                        {
+                            if (GetBlockTypeSafe(GetIndex(height, j, k)) == null)
+                            {
+                                endK = k;
+                                break;
+                            }
+                        }
+                    }
+
+                    for (int j = startJ; j < endJ; j++)
+                    {
+                        for (int k = startK; k < endK; k++)
+                        {
+                            faces[j, k] = null;
+                        }
+                    }
+
+                    DrawQuad(GetIndex(height, startJ, startK), GetIndex(height, startJ, endK), GetIndex(height, endJ, startK));
+                }
             }
         }
 
-        private void DrawTriangle(Vector3 origin, Vector3 offset1, Vector3 offset2)
+        private void DrawQuad(Vector3 origin, Vector3 offset1, Vector3 offset2)
         {
             var index = verts.Count;
 
@@ -176,6 +230,8 @@ namespace Assets.Scripts
             tris.Add(index + 2);
             tris.Add(index + 1);
         }
+
+        private bool IsVisible(Vector3Int pos) => IsVisible(pos.x, pos.y, pos.z);
 
         private bool IsVisible(int x, int y, int z)
         {
