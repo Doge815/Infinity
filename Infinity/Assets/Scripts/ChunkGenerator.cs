@@ -12,14 +12,23 @@ namespace Assets.Scripts
 
         public float GroundHeight = 6f;
 
-        [Space]
-        public float Amplitude = 4f;
-        public float Scale = 0.01f;
+        [Space, Header("Surface")]
+        public float SurfaceAmplitude = 4f;
+        public float SurfaceScale = 0.01f;
 
         [Space]
-        public int Octaves = 6;
-        public float OctaveAmplitude = .2f;
-        public float OctaveScale = .5f;
+        public int SurfaceOctaves = 6;
+        public float SurfaceOctaveAmplitude = .2f;
+        public float SurfaceOctaveScale = .5f;
+
+        [Space, Header("Caves")]
+        public float CaveScale = 0.01f;
+        public float CaveThreshold = 0.2f;
+
+        [Space]
+        public int CaveOctaves = 6;
+        public float CaveOctaveAmplitude = .2f;
+        public float CaveOctaveScale = .5f;
 
         public ChunkGenerator()
         {
@@ -28,27 +37,35 @@ namespace Assets.Scripts
 
         public void Populate(Chunk chunk)
         {
+            var map = chunk.Map ?? new BlockType[Chunk.Size.x, Chunk.Size.y, Chunk.Size.z];
+
             for (int x = 0; x < Chunk.Size.x; x++)
             {
                 for (int z = 0; z < Chunk.Size.z; z++)
                 {
                     var chunkWorldPosition = chunk.WorldPosition;
-                    var NoisePos = (new Vector3(x, 0, z)  + chunkWorldPosition)  * Scale;
+                    var worldPosition = new Vector3(x, 0, z) + chunkWorldPosition;
 
-                    var height =
-                        (Amplitude * Perlin.NoiseWithOctaves(Octaves, OctaveAmplitude, OctaveScale, (x + chunkWorldPosition.x) * Scale, (z + chunkWorldPosition.z) * Scale))
+                    var height = (SurfaceAmplitude * Perlin.NoiseWithOctaves(SurfaceOctaves, SurfaceOctaveAmplitude, SurfaceOctaveScale,
+                            worldPosition.x * SurfaceScale, worldPosition.z * SurfaceScale))
                         + GroundHeight - chunkWorldPosition.y;
 
                     height = Math.Min(height, Chunk.Size.y);
 
                     for (int y = 0; y < height; y++)
                     {
-                        chunk[x, y, z] = (PerlinNoise3D(NoisePos.x, NoisePos.y  +  y  * Scale, NoisePos.z) > 0.2f) ? BlockTypes.Dirt : null;
+                        map[x, y, z] = Perlin.NoiseWithOctaves(CaveOctaves, CaveOctaveAmplitude, CaveOctaveScale,
+                                worldPosition.x * CaveScale, worldPosition.y * CaveScale, worldPosition.z * CaveScale) > CaveThreshold
+                            ? BlockTypes.Dirt
+                            : null;
+
+                        worldPosition.y++;
                     }
                 }
             }
-        }
 
-        public float PerlinNoise3D(float x, float y, float z) => Perlin.NoiseWithOctaves(3, 1, .5f, x, y, z);
+            chunk.Map = map;
+            chunk.RedrawRequired = true;
+        }
     }
 }

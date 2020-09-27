@@ -16,5 +16,15 @@ namespace Assets.Scripts
 
             monoBehaviour.StartCoroutine(ExecuteDelayedCoroutine());
         }
+        public static void Invoke(this MonoBehaviour monoBehaviour, Action action)
+        {
+            IEnumerator InvokeCoroutine()
+            {
+                yield return new WaitForEndOfFrame();
+                action();
+            }
+
+            monoBehaviour.StartCoroutine(InvokeCoroutine());
+        }
     }
 }

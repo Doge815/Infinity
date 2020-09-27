@@ -94,15 +94,12 @@ namespace Assets.Scripts
                 {
                     for (int y = -chunkIndexDistance; y <= chunkIndexDistance; y++)
                     {
-                        Parallel.For(-chunkIndexDistance, chunkIndexDistance + 1, z =>
+                        for (int z = -chunkIndexDistance; z <= chunkIndexDistance; z++)
                         {
-                            if (x == 0 && y == 0 && z == 0) return;
-                            _this.GetOrSpawn(chunkIndex + new Vector3Int(x, y, z), wake);
-                        });
+                            _this.GetOrSpawn(chunkIndex + new Vector3Int(x, z, z), wake);
+                        }
                     }
                 }
-
-                _this.GetOrSpawn(chunkIndex, wake);
             }
         }
 

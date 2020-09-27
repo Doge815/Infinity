@@ -1,6 +1,7 @@
 ﻿using Assets.Players;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -20,7 +21,7 @@ namespace Assets.Scripts
         /// <summary>
         /// The block types of all blocks in the chunk.
         /// </summary>
-        private readonly BlockType[,,] Map;
+        public BlockType[,,] Map;
 
         public World World;
 
@@ -64,18 +65,13 @@ namespace Assets.Scripts
         [HideInInspector]
         public MeshCollider meshCollider;
 
-        public Chunk()
-        {
-            Map = new BlockType[Size.x, Size.y, Size.z];
-        }
-
         public void Start()
         {
             WorldPosition = transform.position.ToVector3Int();
 
             World.Chunks[World.GetChunkIndex(WorldPosition)] = this;
 
-            World.ChunkGenerator.Populate(this);
+            Task.Run(() => World.ChunkGenerator.Populate(this));
 
             mesh = new Mesh();
 
@@ -120,12 +116,12 @@ namespace Assets.Scripts
             tris.Clear();
             uv.Clear();
 
-            this.ExecuteDelayed(() =>
+            this.Invoke(() =>
             {
                 meshFilter.sharedMesh = mesh;
                 meshCollider.sharedMesh = null;
                 meshCollider.sharedMesh = mesh;
-            }, 0f);
+            });
         }
 
         private void DrawSide(int side, bool isNegated)
@@ -164,7 +160,7 @@ namespace Assets.Scripts
                     {
                         for (int k = 0; k < Size[sideK]; k++)
                         {
-                            if (GetBlockTypeSafe(GetIndex(height, j, k)) != null)
+                            if (faces[j, k] != null)
                             {
                                 startJ = j;
                                 startK = k;
@@ -178,20 +174,20 @@ namespace Assets.Scripts
 
                     int endJ = Size[sideJ], endK = Size[sideK];
 
-                    for (int j = startJ; j < endJ; j++)
+                    for (int j = startJ + 1; j < endJ; j++)
                     {
-                        if (GetBlockTypeSafe(GetIndex(height, j, startK)) == null)
+                        if (faces[j, startK] == null)
                         {
                             endJ = j;
                             break;
                         }
                     }
 
-                    for (int k = startK+1; k < endK; k++)
+                    for (int k = startK + 1; k < endK; k++)
                     {
                         for (int j = startJ; j < endJ; j++)
                         {
-                            if (GetBlockTypeSafe(GetIndex(height, j, k)) == null)
+                            if (faces[j, k] == null)
                             {
                                 endK = k;
                                 break;
@@ -207,7 +203,9 @@ namespace Assets.Scripts
                         }
                     }
 
-                    DrawQuad(GetIndex(height, startJ, startK), GetIndex(height, startJ, endK), GetIndex(height, endJ, startK));
+                    var start = GetIndex(height, startJ, startK);
+                    DrawQuad(start + (Vector3.one / 2f) - (GetIndex(height, 0, 0).ToVector3() * (isNegated ? -1 : 1) / 2f),
+                        GetIndex(height, endJ, startK) - start, GetIndex(height, startJ, endK) - start);
                 }
             }
         }
