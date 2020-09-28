@@ -107,6 +107,7 @@ namespace Assets.Scripts
         {
             var chunk = Instantiate(ChunkPrefab, chunkIndex * Chunk.Size, Quaternion.identity, transform);
 
+            chunk.name = $"Chunk {chunkIndex}";
             chunk.World = this;
             _loadedChunks[chunkIndex] = chunk;
 

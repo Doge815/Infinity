@@ -24,10 +24,10 @@ namespace Assets.Scripts
 
         public World World;
 
-        public BlockType this[Vector3Int pos]
+        public BlockType this[Vector3Int localPos]
         {
-            get => this[pos.x, pos.y, pos.z];
-            set => this[pos.x, pos.y, pos.z] = value;
+            get => this[localPos.x, localPos.y, localPos.z];
+            set => this[localPos.x, localPos.y, localPos.z] = value;
         }
 
         public BlockType this[int x, int y, int z]
@@ -41,12 +41,19 @@ namespace Assets.Scripts
             }
         }
 
-        public BlockType GetBlockTypeSafe(Vector3Int pos) => GetBlockTypeSafe(pos.x, pos.y, pos.z);
+        public bool IsInBounds(Vector3Int localPos) => IsInBounds(localPos.x, localPos.y, localPos.z);
 
-        public BlockType GetBlockTypeSafe(int x, int y, int z) =>
-            x < 0 || y < 0 || z < 0 || x >= Size.x || y >= Size.y || z >= Size.z
-            ? null
-            : this[x, y, z];
+        public bool IsInBounds(int x, int y, int z) => x >= 0 && x < Size.x
+                && y >= 0 && y < Size.y
+                && z >= 0 && z < Size.z;
+
+        public BlockType GetBlockTypeSafe(Vector3Int localPos) => GetBlockTypeSafe(localPos.x, localPos.y, localPos.z);
+
+        public BlockType GetBlockTypeSafe(int x, int y, int z) => IsInBounds(x, y, z) ? this[x, y, z] : null;
+
+        private bool IsVisible(Vector3Int pos) => IsVisible(pos.x, pos.y, pos.z);
+
+        private bool IsVisible(int x, int y, int z) => IsInBounds(x, y, z) && Map?[x, y, z] != null;
 
         // TODO: Use events
         public bool RedrawRequired = false;
@@ -138,7 +145,7 @@ namespace Assets.Scripts
                 [sideK] = k,
             };
 
-            for (int height = 0; height <= Size[sideI]; height++)
+            for (int height = -1; height <= Size[sideI]; height++)
             {
                 var faces = new BlockType[Size[sideJ], Size[sideK]];
 
@@ -146,7 +153,9 @@ namespace Assets.Scripts
                 {
                     for (int k = 0; k < Size[sideK]; k++)
                     {
-                        faces[j, k] = IsVisible(GetIndex(height + (isNegated ? -1 : 1), j, k)) ? null : GetBlockTypeSafe(GetIndex(height, j, k));
+                        var block = GetBlockTypeSafe(GetIndex(height, j, k));
+                        if (block == null) continue;
+                        faces[j, k] = IsVisible(GetIndex(height + (isNegated ? -1 : 1), j, k)) ? null : block;
                     }
                 }
 
@@ -202,8 +211,9 @@ namespace Assets.Scripts
                     }
 
                     var start = GetIndex(height, startJ, startK);
-                    DrawQuad(start + (GetIndex(isNegated ? -1 : 1, -1, -1).ToVector3() / 2f),
-                        GetIndex(0, endJ - startJ, 0), GetIndex(0, 0, endK - startK));
+                    DrawQuad(start + (GetIndex(isNegated ? -1 : 1, -1, -1).ToVector3() / 2f) + (Vector3.one / 2f),
+                        GetIndex(0, endJ - startJ, 0), GetIndex(0, 0, endK - startK),
+                        isNegated);
                 }
             }
         }
@@ -234,7 +244,7 @@ namespace Assets.Scripts
                     [sideK] = k,
                 };
 
-                for (int height = 0; height <= Size[sideI]; height++)
+                for (int height = -1; height <= Size[sideI]; height++)
                 {
                     var faces = new BlockType[Size[sideJ], Size[sideK]];
 
@@ -242,16 +252,9 @@ namespace Assets.Scripts
                     {
                         for (int k = 0; k < Size[sideK]; k++)
                         {
-                            faces[j, k] = IsVisible(GetIndex(height + (isNegated ? -1 : 1), j, k)) ? null : GetBlockTypeSafe(GetIndex(height, j, k));
-
-                            if (faces[j, k] == null) continue;
-                            var pos = GetIndex(height, j, k);
-
-                            Gizmos.color = new Color(1, 0, 0, 1f);
-                            Gizmos.DrawWireCube(
-                                WorldPosition + pos + (GetIndex(isNegated ? -1 : 1, 0, 0).ToVector3() / 2f),
-                                GetIndex(0, 1, 1));
-                            Gizmos.color = Color.black;
+                            var block = GetBlockTypeSafe(GetIndex(height, j, k));
+                            if (block == null) continue;
+                            faces[j, k] = IsVisible(GetIndex(height + (isNegated ? -1 : 1), j, k)) ? null : block;
                         }
                     }
 
@@ -309,21 +312,31 @@ namespace Assets.Scripts
                         var start = GetIndex(height, startJ, startK);
                         var size = GetIndex(0, endJ - startJ, endK - startK);
                         Gizmos.DrawWireCube(
-                            WorldPosition + start + (size.ToVector3() / 2f) + (GetIndex(isNegated ? -1 : 1, -1, -1).ToVector3() / 2f),// - (Vector3.one / 2f),
+                            WorldPosition + start + (size.ToVector3() / 2f) + (GetIndex(isNegated ? -1 : 1, -1, -1).ToVector3() / 2f) + (Vector3.one / 2f),
                             size);
                     }
                 }
             }
         }
 
-        private void DrawQuad(Vector3 origin, Vector3 offset1, Vector3 offset2)
+        private void DrawQuad(Vector3 origin, Vector3 offset1, Vector3 offset2, bool mirror)
         {
             var index = verts.Count;
 
-            verts.Add(origin);
-            verts.Add(origin + offset1);
-            verts.Add(origin + offset2);
-            verts.Add(origin + offset1 + offset2);
+            if (mirror)
+            {
+                verts.Add(origin);
+                verts.Add(origin + offset2);
+                verts.Add(origin + offset1);
+                verts.Add(origin + offset1 + offset2);
+            }
+            else
+            {
+                verts.Add(origin);
+                verts.Add(origin + offset1);
+                verts.Add(origin + offset2);
+                verts.Add(origin + offset1 + offset2);
+            }
 
             tris.Add(index + 0);
             tris.Add(index + 1);
@@ -331,16 +344,6 @@ namespace Assets.Scripts
             tris.Add(index + 3);
             tris.Add(index + 2);
             tris.Add(index + 1);
-        }
-
-        private bool IsVisible(Vector3Int pos) => IsVisible(pos.x, pos.y, pos.z);
-
-        private bool IsVisible(int x, int y, int z)
-        {
-            return x < 0 || x >= Size.x
-                || y < 0 || y >= Size.y
-                || z < 0 || z >= Size.z
-                || Map?[x, y, z] != null;
         }
     }
 }
